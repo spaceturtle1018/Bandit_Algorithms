@@ -3,20 +3,26 @@
 \usepackage{amsmath, amsthm}
 \usepackage{amssymb}
 \usepackage{enumitem}
+\usepackage{bbm}
+
 
 %------------------------------------------------------------
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{theorem*}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{lemma*}{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{remark}[theorem]{Remark}
 
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
+\newtheorem{definition}[theorem]{Definition}
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
+%------------------------------------------------------------
 
 \begin{document}
 
@@ -24,6 +30,8 @@
 \author{}
 \date{\today}
 \maketitle
+
+%------------------------------------------------------------
 
 \section{Bandits, Probability and Concentration}
 \subsection{Introduction}
@@ -38,7 +46,7 @@
         \item Environment: $\mathcal{E} : A_t \mapsto X_t$.
         \item Regret of a learner relative to a policy $\pi$ until $n \in \mathbb{N}$ is 
         \begin{equation}
-            R_n = \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mathcal{E}(\pi (H_{t-1})) \right|.
+            R_n = \mathbb{E}\left[ \sum_{t=1}^{n} \mathcal{E}(\pi (H_{t-1})) - \sum_{t=1}^{n} X_t \right].
         \end{equation}
         where $H_0$ represents the initial condition.
     \end{itemize}
@@ -52,13 +60,115 @@
     \end{itemize}
     Here the optimal policy is to play fixed action $a^* = \argmax\limits_{a \in \mathcal{A}} \mu_a$.
     That is, the competitor class $\Pi$ is the set of all constant policies $\Pi = \left \{ \pi_1, \ldots , \pi_k \right \}$ where $\pi_i$ chooses action $i$ in every round.
-    The regret relative to the optimal policy until n rounds is
+    The regret relative to the optimal policy $\pi^*$ until n rounds is
     \begin{equation}
         \begin{aligned}
-            R_n &= \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mathcal{E}(\pi^* (H_{t-1})) \right| \\
-            &= \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mu_{a^*} \right|.
+            R_n &= \mathbb{E}\left[ \sum_{t=1}^{n} \mathcal{E}(\pi^* (H_{t-1})) - \sum_{t=1}^{n} X_t \right] \\
+            &= n \max\limits_{a \in \mathcal{A}} \mu_a - \mathbb{E}\left[ \sum_{t=1}^{n} X_t \right].
         \end{aligned}
     \end{equation}
 }
+\definition{
+    \textbf{Stochastic stationary bandits} are the environments restricted to generate the rewards in response to each action from a distribution independent of the previous history.
+    \example[Linear Stochastic Bandits]{
+        \leavevmode
+        \begin{itemize}
+            \item $\mathcal{A} \subset \mathbb{R}^d$,
+            \item $X_t = \langle a, \theta \rangle + \eta_t$ for $\theta \in \mathbb{R}^d, a \in \mathcal{A}$ and $\eta_t$ is a standard Gaussian.
+        \end{itemize}
+    }
+}
+
+%------------------------------------------------------------
+
+\subsection{Foundations of Probability}
+\definition{Let an \textbf{event set} $\Omega$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item A set $\mathcal{F} \subset 2^{\Omega}$ is called a \textbf{$\sigma$-algebra} on $\Omega$ if
+        \begin{itemize}
+            \item[(1)] $\Omega \in \mathcal{F}$,
+            \item[(2)] $A \in \mathcal{F} \implies A^c \in \mathcal{F}$,
+            \item[(3)] $A_1, A_2, \ldots \in \mathcal{F} \implies \bigcup_{i=1}^{\infty} A_i \in \mathcal{F}$.
+        \end{itemize}
+        \item $\mathcal{G} \subseteq \mathcal{F}$ is a \textbf{sub-$\sigma$-algebra} if $\mathcal{G}$ is a $\sigma$-algebra on $\Omega$.
+        \item ($\Omega, \mathcal{F}$) is called a \textbf{measurable space} if $\mathcal{F}$ is a $\sigma$-algebra on $\Omega$.
+        \item $\mathcal{B}(\mathbb{R})$ is the \textbf{Borel $\sigma$-algebra} on $\mathbb{R}$, which is the smallest $\sigma$-algebra containing all open intervals $(a, b)$ for $a, b \in \mathbb{R}$.
+    \end{itemize}
+}
+\definition{Let a measurable space $(\Omega, \mathcal{F})$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item A function $\mu : \mathcal{F} \mapsto [0, \infty]$ is \textbf{$\sigma$-additive} if 
+        \begin{itemize}
+            \item[(1)] $\mu(\emptyset) = 0$,
+            \item[(2)] $A_1, A_2, \ldots \in \mathcal{F}$ are disjoint $\implies \mu\left( \bigcup_{i=1}^{\infty} A_i \right) = \sum_{i=1}^{\infty} \mu(A_i)$.
+        \end{itemize}
+        \item A function $\mu : \mathcal{F} \mapsto [0, \infty]$ is a \textbf{measure} if $\mu$ is $\sigma$-additive.
+        \item $(\Omega, \mathcal{F}, \mu)$ is called a \textbf{measure space} if $\mu$ is a measure on $(\Omega, \mathcal{F})$.
+        \item A measure $\mu$ is a \textbf{probability measure} if $\mu(\Omega) = 1$.
+        \item $(\Omega, \mathcal{F}, \mu)$ is called a \textbf{probability space} if $\mu$ is a probability measure on $(\Omega, \mathcal{F})$.
+        \item A function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{measurable function} if $^\forall \hspace{0.1em} B \in \mathcal{B}(\mathbb{R})$, $X^{-1}(B) \in \mathcal{F}$.
+    \end{itemize}
+}
+\definition{Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item A function $f : \Omega \mapsto [0, \infty]$ is called a \textbf{simple function} if $f = \sum_{i=1}^{n} a_i \mathbbm{1}_{A_i}$ for some $a_1, a_2, \ldots, a_n \in [0, \infty]$ and $A_1, A_2, \ldots, A_n \in \mathcal{F}$.
+        \item The \textbf{integral of a simple function} $f = \sum_{i=1}^{n} a_i \mathbbm{1}_{A_i}$ is defined as $\int_{\Omega} f d\mu := \sum_{i=1}^{n} a_i \mu(A_i)$.
+        \item The \textbf{integral of a non-negative measurable function} $f : \Omega \mapsto [0, \infty]$ is defined as $\int_{\Omega} f d\mu := \sup\limits_{g} \int_{\Omega} g d\mu$ where the supremum is taken over all simple functions $g$ such that $0 \leq g(\omega) \leq f(\omega)$ for all $\omega \in \Omega$.
+        \item The \textbf{integral of a measurable function} $f : \Omega \mapsto \mathbb{R}$ is defined as $\int_{\Omega} f d\mu := \int_{\Omega} f^+ d\mu - \int_{\Omega} f^- d\mu$ where $f^+ = \max(f, 0)$ and $f^- = \max(-f, 0)$.
+        \item A function $f : \Omega \mapsto \mathbb{R}$ is called \textbf{integrable} if $\int_{\Omega} |f| d\mu < \infty$.
+    \end{itemize}
+}
+\definition{Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item A measurable function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{random variable}.
+        \item The \textbf{conditional probability} $\mathbb{P}[A|B] := \frac{\mathbb{P}[A \cap B]}{\mathbb{P}[B]}$ for $A, B \in \mathcal{F}$ and $\mathbb{P}[B] > 0$.
+        \item Two events $A, B \in \mathcal{F}$ are called \textbf{independent} if $\mathbb{P}[A \cap B] = \mathbb{P}[A] \cdot \mathbb{P}[B]$.
+        \item Two random variables $X, Y$ are called \textbf{independent} if $^\forall \hspace{0.1em} A, B \in \mathcal{B}(\mathbb{R})$, $\mathbb{P}[X \in A, Y \in B] = \mathbb{P}[X \in A] \cdot \mathbb{P}[Y \in B]$.
+    \end{itemize}
+}
+\definition{Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item The \textbf{expectation} of a random variable $X$ is defined as $\mathbb{E}[X] := \int_{\Omega} X d\mathbb{P}$.
+        \item For a sub-$\sigma$-algebra $\mathcal{H} \subseteq \mathcal{F}$, the \textbf{conditional expectation} of $X$ given $\mathcal{H}$ is denoted by $\mathbb{E}[X|\mathcal{H}]$ 
+        and is defined as a random variable $g$ on $\Omega$ such that for all $H \in \mathcal{H}$,
+        \begin{equation*}
+            \int_{H} g \hspace{0.2em} d\mathbb{P} = \int_{H} X d\mathbb{P}.
+        \end{equation*}
+    \end{itemize}
+}
+\begin{theorem*}[2.11]
+    If $(\Omega, \mathcal{F}, \mathbb{P})$ is a probability space and $X$ is a integrable random variable and $\mathcal{H} \subseteq \mathcal{F}$ is a sub-$\sigma$-algebra, there exists a unique (almost surely) random variable $\mathbb{E}[X|\mathcal{H}]$ such that for all $H \in \mathcal{H}$,
+    \begin{equation*}
+        \int_{H} \mathbb{E}[X|\mathcal{H}] \hspace{0.2em} d\mathbb{P} = \int_{H} X d\mathbb{P}.
+    \end{equation*}
+\end{theorem*}
+
+\begin{theorem*}[2.12]
+    Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, 
+    $\mathcal{G}, \mathcal{G}_1, \mathcal{G}_2 \subseteq \mathcal{F}$ be sub-$\sigma$-algebras of $\mathcal{F}$,
+    $X, Y$ be integrable random variables on $(\Omega, \mathcal{F}, \mathbb{P})$.
+    Then the following properties hold:
+    \begin{itemize}
+        \item[\text{(1)}] If $X \geq 0$ almost surely, then $\mathbb{E}[X|\mathcal{G}] \geq 0$ almost surely.
+        \item[\text{(2)}] $\mathbb{E}[1|\mathcal{G}] = 1$ almost surely.
+        \item[\text{(3)}] $\mathbb{E}[X + Y|\mathcal{G}] = \mathbb{E}[X|\mathcal{G}] + \mathbb{E}[Y|\mathcal{G}]$ almost surely.
+        \item[\text{(4)}] If $Y$ is $\mathcal{G}$-measurable and $\mathbb{E}[XY] < \infty$, then $\mathbb{E}[XY|\mathcal{G}] = Y \mathbb{E}[X|\mathcal{G}]$ almost surely.
+        \item[\text{(5)}] If $\mathcal{G}_1 \subseteq \mathcal{G}_2$, then $\mathbb{E}[X|\mathcal{G}_1] = \mathbb{E}[\mathbb{E}[X|\mathcal{G}_2]|\mathcal{G}_1]$ almost surely.
+    \end{itemize}
+\end{theorem*}
+%------------------------------------------------------------
+\subsection{Stochastic Processes and Markov Chains}
+
+%------------------------------------------------------------
+\subsection{Stochastic Bandits}
+\definition{
+    A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
+}
+Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
 
 \end{document}
