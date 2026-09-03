@@ -14,11 +14,15 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem*{proposition*}{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{corollary*}{Corollary}
 \newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remark*}{Remark}
 
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
+\newtheorem*{example*}{Example}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem*{definition*}{Definition}
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -36,7 +40,7 @@
 \section{Bandits, Probability and Concentration}
 \subsection{Introduction}
 
-\definition{
+\begin{definition*}
     \leavevmode
     \begin{itemize}
         \item Actions : ${A_1, A_2, \cdots } \in \mathcal{A}$ and we call $\mathcal{A}$ the action set.
@@ -50,8 +54,8 @@
         \end{equation}
         where $H_0$ represents the initial condition.
     \end{itemize}
-}
-\example{
+\end{definition*}
+\begin{example*}
     An environment is called a \textbf{stochastic Bernoulli bandit} if 
     \begin{itemize}
         \item $\mathcal{A} = \left \{ 1, 2, \ldots, k \right \}$,
@@ -61,28 +65,28 @@
     Here the optimal policy is to play fixed action $a^* = \argmax\limits_{a \in \mathcal{A}} \mu_a$.
     That is, the competitor class $\Pi$ is the set of all constant policies $\Pi = \left \{ \pi_1, \ldots , \pi_k \right \}$ where $\pi_i$ chooses action $i$ in every round.
     The regret relative to the optimal policy $\pi^*$ until n rounds is
-    \begin{equation}
+    \begin{equation*}
         \begin{aligned}
             R_n &= \mathbb{E}\left[ \sum_{t=1}^{n} \mathcal{E}(\pi^* (H_{t-1})) - \sum_{t=1}^{n} X_t \right] \\
             &= n \max\limits_{a \in \mathcal{A}} \mu_a - \mathbb{E}\left[ \sum_{t=1}^{n} X_t \right].
         \end{aligned}
-    \end{equation}
-}
-\definition{
+    \end{equation*}
+\end{example*}
+\begin{definition*}
     \textbf{Stochastic stationary bandits} are the environments restricted to generate the rewards in response to each action from a distribution independent of the previous history.
-    \example[Linear Stochastic Bandits]{
+    \begin{example*}[Linear Stochastic Bandits]
         \leavevmode
         \begin{itemize}
             \item $\mathcal{A} \subset \mathbb{R}^d$,
             \item $X_t = \langle a, \theta \rangle + \eta_t$ for $\theta \in \mathbb{R}^d, a \in \mathcal{A}$ and $\eta_t$ is a standard Gaussian.
         \end{itemize}
-    }
-}
+    \end{example*}
+\end{definition*}
 
 %------------------------------------------------------------
 
 \subsection{Foundations of Probability}
-\definition{Let an \textbf{event set} $\Omega$ be given.
+\begin{definition*}Let an \textbf{event set} $\Omega$ be given.
     \leavevmode
     \begin{itemize}
         \item A set $\mathcal{F} \subset 2^{\Omega}$ is called a \textbf{$\sigma$-algebra} on $\Omega$ if
@@ -95,8 +99,8 @@
         \item ($\Omega, \mathcal{F}$) is called a \textbf{measurable space} if $\mathcal{F}$ is a $\sigma$-algebra on $\Omega$.
         \item $\mathcal{B}(\mathbb{R})$ is the \textbf{Borel $\sigma$-algebra} on $\mathbb{R}$, which is the smallest $\sigma$-algebra containing all open intervals $(a, b)$ for $a, b \in \mathbb{R}$.
     \end{itemize}
-}
-\definition{Let a measurable space $(\Omega, \mathcal{F})$ be given.
+\end{definition*}
+\begin{definition*}Let a measurable space $(\Omega, \mathcal{F})$ be given.
     \leavevmode
     \begin{itemize}
         \item A function $\mu : \mathcal{F} \mapsto [0, \infty]$ is \textbf{$\sigma$-additive} if 
@@ -110,8 +114,8 @@
         \item $(\Omega, \mathcal{F}, \mu)$ is called a \textbf{probability space} if $\mu$ is a probability measure on $(\Omega, \mathcal{F})$.
         \item A function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{measurable function} if $^\forall \hspace{0.1em} B \in \mathcal{B}(\mathbb{R})$, $X^{-1}(B) \in \mathcal{F}$.
     \end{itemize}
-}
-\definition{Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
+\end{definition*}
+\begin{definition*}Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
     \leavevmode
     \begin{itemize}
         \item A function $f : \Omega \mapsto [0, \infty]$ is called a \textbf{simple function} if $f = \sum_{i=1}^{n} a_i \mathbbm{1}_{A_i}$ for some $a_1, a_2, \ldots, a_n \in [0, \infty]$ and $A_1, A_2, \ldots, A_n \in \mathcal{F}$.
@@ -120,8 +124,8 @@
         \item The \textbf{integral of a measurable function} $f : \Omega \mapsto \mathbb{R}$ is defined as $\int_{\Omega} f d\mu := \int_{\Omega} f^+ d\mu - \int_{\Omega} f^- d\mu$ where $f^+ = \max(f, 0)$ and $f^- = \max(-f, 0)$.
         \item A function $f : \Omega \mapsto \mathbb{R}$ is called \textbf{integrable} if $\int_{\Omega} |f| d\mu < \infty$.
     \end{itemize}
-}
-\definition{Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
+\end{definition*}
+\begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
     \leavevmode
     \begin{itemize}
         \item A measurable function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{random variable}.
@@ -129,8 +133,8 @@
         \item Two events $A, B \in \mathcal{F}$ are called \textbf{independent} if $\mathbb{P}[A \cap B] = \mathbb{P}[A] \cdot \mathbb{P}[B]$.
         \item Two random variables $X, Y$ are called \textbf{independent} if $^\forall \hspace{0.1em} A, B \in \mathcal{B}(\mathbb{R})$, $\mathbb{P}[X \in A, Y \in B] = \mathbb{P}[X \in A] \cdot \mathbb{P}[Y \in B]$.
     \end{itemize}
-}
-\definition{Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
+\end{definition*}
+\begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
     \leavevmode
     \begin{itemize}
         \item The \textbf{expectation} of a random variable $X$ is defined as $\mathbb{E}[X] := \int_{\Omega} X d\mathbb{P}$.
@@ -140,7 +144,7 @@
             \int_{H} g \hspace{0.2em} d\mathbb{P} = \int_{H} X d\mathbb{P}.
         \end{equation*}
     \end{itemize}
-}
+\end{definition*}
 \begin{theorem*}[2.11]
     If $(\Omega, \mathcal{F}, \mathbb{P})$ is a probability space and $X$ is a integrable random variable and $\mathcal{H} \subseteq \mathcal{F}$ is a sub-$\sigma$-algebra, there exists a unique (almost surely) random variable $\mathbb{E}[X|\mathcal{H}]$ such that for all $H \in \mathcal{H}$,
     \begin{equation*}
@@ -163,12 +167,14 @@
 \end{theorem*}
 %------------------------------------------------------------
 \subsection{Stochastic Processes and Markov Chains}
-
+\begin{definition*}
+    T
+\end{definition*}
 %------------------------------------------------------------
 \subsection{Stochastic Bandits}
-\definition{
+\begin{definition*}
     A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
-}
+\end{definition*}
 Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
 
 \end{document}
