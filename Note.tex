@@ -1,0 +1,64 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amsthm}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+%------------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+%------------------------------------------------------------
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+
+\title{Note on Bandit Algorithms}
+\author{}
+\date{\today}
+\maketitle
+
+\section{Bandits, Probability and Concentration}
+\subsection{Introduction}
+
+\definition{
+    \leavevmode
+    \begin{itemize}
+        \item Actions : ${A_1, A_2, \cdots } \in \mathcal{A}$ and we call $\mathcal{A}$ the action set.
+        \item Rewards : ${X_1, X_2, \cdots } \in \mathcal{R}$.
+        \item History : $H_{t-1} = (A_1, X_1, \cdots, A_{t-1}, X_{t-1})$.
+        \item Policy : $\pi \in \Pi : H_{t-1} \mapsto A_t$ and we call $\Pi$ the competitor class.
+        \item Environment: $\mathcal{E} : A_t \mapsto X_t$.
+        \item Regret of a learner relative to a policy $\pi$ until $n \in \mathbb{N}$ is 
+        \begin{equation}
+            R_n = \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mathcal{E}(\pi (H_{t-1})) \right|.
+        \end{equation}
+        where $H_0$ represents the initial condition.
+    \end{itemize}
+}
+\example{
+    An environment is called a \textbf{stochastic Bernoulli bandit} if 
+    \begin{itemize}
+        \item $\mathcal{A} = \left \{ 1, 2, \ldots, k \right \}$,
+        \item $X_t \in \left\{0, 1 \right\}$,
+        \item $^\forall \hspace{0.1em} a \in \mathcal{A}$, $\exists \hspace{0.2em} \mu_a \in [0,1]^k \text{ such that } \mathbb{P} \left[ X_t = 1| A_t = a \right] = \mu_a$.
+    \end{itemize}
+    Here the optimal policy is to play fixed action $a^* = \argmax\limits_{a \in \mathcal{A}} \mu_a$.
+    That is, the competitor class $\Pi$ is the set of all constant policies $\Pi = \left \{ \pi_1, \ldots , \pi_k \right \}$ where $\pi_i$ chooses action $i$ in every round.
+    The regret relative to the optimal policy until n rounds is
+    \begin{equation}
+        \begin{aligned}
+            R_n &= \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mathcal{E}(\pi^* (H_{t-1})) \right| \\
+            &= \left| \sum_{t=1}^{n} X_t - \sum_{t=1}^{n} \mu_{a^*} \right|.
+        \end{aligned}
+    \end{equation}
+}
+
+\end{document}
