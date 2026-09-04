@@ -8,21 +8,50 @@
 
 %------------------------------------------------------------
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem*{theorem*}{Theorem}
+\newtheorem{manualtheoreminner}{Theorem}
+\newenvironment{theorem*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualtheoreminner}{\unskip}}
+    {\renewcommand\themanualtheoreminner{#1}}%
+  \manualtheoreminner
+}{\endmanualtheoreminner}
+
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem*{lemma*}{Lemma}
+\newtheorem{manuallemmainner}{Lemma}
+\newenvironment{lemma*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanuallemmainner}{\unskip}}
+    {\renewcommand\themanuallemmainner{#1}}%
+  \manuallemmainner
+}{\endmanuallemmainner}
+
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem*{proposition*}{Proposition}
+
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem*{corollary*}{Corollary}
+
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem*{remark*}{Remark}
 
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
-\newtheorem*{example*}{Example}
+\newtheorem{manualexampleinner}{Example}
+\newenvironment{example*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualexampleinner}{\unskip}}
+    {\renewcommand\themanualexampleinner{#1}}%
+  \manualexampleinner
+}{\endmanualexampleinner}
+
 \newtheorem{definition}[theorem]{Definition}
-\newtheorem*{definition*}{Definition}
+\newtheorem{manualdefinitioninner}{Definition}
+\newenvironment{definition*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualdefinitioninner}{\unskip}}
+    {\renewcommand\themanualdefinitioninner{#1}}%
+  \manualdefinitioninner
+}{\endmanualdefinitioninner}
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -40,7 +69,7 @@
 \section{Bandits, Probability and Concentration}
 \subsection{Introduction}
 
-\begin{definition*}
+\begin{definition*}{}
     \leavevmode
     \begin{itemize}
         \item Actions : ${A_1, A_2, \cdots } \in \mathcal{A}$ and we call $\mathcal{A}$ the action set.
@@ -49,9 +78,9 @@
         \item Policy : $\pi \in \Pi : H_{t-1} \mapsto A_t$ and we call $\Pi$ the competitor class.
         \item Environment: $\mathcal{E} : A_t \mapsto X_t$.
         \item Regret of a learner relative to a policy $\pi$ until $n \in \mathbb{N}$ is 
-        \begin{equation}
+        \begin{equation*}
             R_n = \mathbb{E}\left[ \sum_{t=1}^{n} \mathcal{E}(\pi (H_{t-1})) - \sum_{t=1}^{n} X_t \right].
-        \end{equation}
+        \end{equation*}
         where $H_0$ represents the initial condition.
     \end{itemize}
 \end{definition*}
@@ -74,9 +103,9 @@
     \end{equation*}
 \end{example*}
 
-\begin{definition*}
+\begin{definition*}{}
     \textbf{Stochastic stationary bandits} are the environments restricted to generate the rewards in response to each action from a distribution independent of the previous history.
-    \begin{example*}[Linear Stochastic Bandits]
+    \begin{example*}{Linear Stochastic Bandits}
         \leavevmode
         \begin{itemize}
             \item $\mathcal{A} \subset \mathbb{R}^d$,
@@ -89,7 +118,7 @@
 
 \subsection{Foundations of Probability}
 
-\begin{definition*}Let an \textbf{event set} $\Omega$ be given.
+\begin{definition*}{}Let an \textbf{event set} $\Omega$ be given.
     \leavevmode
     \begin{itemize}
         \item A set $\mathcal{F} \subset 2^{\Omega}$ is called a \textbf{$\sigma$-algebra} on $\Omega$ if
@@ -104,7 +133,7 @@
     \end{itemize}
 \end{definition*}
 
-\begin{definition*}Let a measurable space $(\Omega, \mathcal{F})$ be given.
+\begin{definition*}{}Let a measurable space $(\Omega, \mathcal{F})$ be given.
     \leavevmode
     \begin{itemize}
         \item A function $\mu : \mathcal{F} \mapsto [0, \infty]$ is \textbf{$\sigma$-additive} if 
@@ -121,7 +150,7 @@
     \end{itemize}
 \end{definition*}
 
-\begin{definition*}Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
+\begin{definition*}{}Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
     \leavevmode
     \begin{itemize}
         \item A function $f : \Omega \mapsto [0, \infty]$ is called a \textbf{simple function} if $f = \sum_{i=1}^{n} a_i \mathbbm{1}_{A_i}$ for some $a_1, a_2, \ldots, a_n \in [0, \infty]$ and $A_1, A_2, \ldots, A_n \in \mathcal{F}$.
@@ -132,7 +161,7 @@
     \end{itemize}
 \end{definition*}
 
-\begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
+\begin{definition*}{}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
     \leavevmode
     \begin{itemize}
         \item A measurable function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{random variable}.
@@ -142,7 +171,7 @@
     \end{itemize}
 \end{definition*}
 
-\begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
+\begin{definition*}{}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
     \leavevmode
     \begin{itemize}
         \item The \textbf{expectation} of a random variable $X$ is defined as $\mathbb{E}[X] := \int_{\Omega} X d\mathbb{P}$.
@@ -154,14 +183,14 @@
     \end{itemize}
 \end{definition*}
 
-\begin{theorem*}[2.11]
+\begin{theorem*}{2.11}
     If $(\Omega, \mathcal{F}, \mathbb{P})$ is a probability space and $X$ is a integrable random variable and $\mathcal{H} \subseteq \mathcal{F}$ is a sub-$\sigma$-algebra, there exists a unique (almost surely) random variable $\mathbb{E}[X|\mathcal{H}]$ such that for all $H \in \mathcal{H}$,
     \begin{equation*}
         \int_{H} \mathbb{E}[X|\mathcal{H}] \hspace{0.2em} d\mathbb{P} = \int_{H} X d\mathbb{P}.
     \end{equation*}
 \end{theorem*}
 
-\begin{theorem*}[2.12]
+\begin{theorem*}{2.12}
     Let $(\Omega, \mathcal{F}, \mathbb{P})$ be a probability space, 
     $\mathcal{G}, \mathcal{G}_1, \mathcal{G}_2 \subseteq \mathcal{F}$ be sub-$\sigma$-algebras of $\mathcal{F}$,
     $X, Y$ be integrable random variables on $(\Omega, \mathcal{F}, \mathbb{P})$.
@@ -179,7 +208,7 @@
 
 \subsection{Stochastic Processes and Markov Chains}
 
-\begin{definition*}
+\begin{definition*}{}
     Let two measurable spaces $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ be given.
     \leavevmode
     \begin{itemize}
@@ -188,16 +217,16 @@
     \end{itemize}
 \end{definition*}
 
-\begin{theorem*}[3.1]
+\begin{theorem*}{3.1}
     Let $\mu$ be a probability measure on a Borel space $S$ and $\lambda$ be the Lebesgue measure on $([0,1], \mathcal{B}([0,1]))$.
     Then there exists a sequence of independent random element $X_1, X_2, \ldots$ on $([0,1], \mathcal{B}([0,1]), \lambda)$ such that $\lambda_{X_t}(\cdot) := \lambda(X^{-1}_t(\cdot)) = \mu(\cdot)$ for all $t$.
 \end{theorem*}
 
-\begin{definition*}
+\begin{definition*}{}
     For "countable" set $\mathcal{T}$, A stochastic process is a collection of random variables ${X_t : t \in \mathcal{T}}$.
 \end{definition*}
 
-\begin{theorem*}[3.2]
+\begin{theorem*}{3.2}
     Let Borel spaces $(\Omega_n, \mathcal{F}_n)$ and measures $\mu_n$ on $(\Omega_1 \times \cdots \times \Omega_n, \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n)$ are given for each $n \in \mathbb{N}$.
     \begin{align*}
         & ^\forall n \in \mathbb{N} \hspace{0.5em} \text{and} \hspace{0.5em} A \in \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n, \hspace{0.8em} \mu_{n+1}(A\times \Omega_{n+1}) = \mu_n (A) \\
@@ -206,7 +235,7 @@
     \end{align*}
 \end{theorem*}
 
-\begin{definition*}
+\begin{definition*}{}
     Let $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ be measurable spaces. 
     A \textbf{probability kernel} or \textbf{Markov kernel} form $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{Y}, \mathcal{G})$ is a function $K : \mathcal{X} \times \mathcal{G} \rightarrow [0,1]$ such that
     \begin{itemize}
@@ -216,7 +245,7 @@
     Notation: $K_x(A)$ or $K(A|x)$
 \end{definition*}
 
-\begin{definition*}
+\begin{definition*}{}
     Let $K_1$ be a probability kernel from $(\mathcal{X}, \mathcal{F}) \rightarrow (\mathcal{Y},\mathcal{G})$ and $K_2$ be a probability kernel from $(\mathcal{Y}, \mathcal{G}) \rightarrow (\mathcal{Z},\mathcal{H})$.
     Then the product kernel $K_1 \otimes K_2$ is the probability kernel from $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{Y} \times \mathcal{Z}, \mathcal{G} \otimes \mathcal{H})$ defined by
     \begin{equation*}
@@ -224,7 +253,7 @@
     \end{equation*}
 \end{definition*}
 
-\begin{theorem*}[3.3]
+\begin{theorem*}{3.3}
     Let $(\Omega_n, \mathcal{F}_n)_{n=1}^\infty$ be a sequence of measurable spaces.
     \begin{align*}
     & K_1 \text{ : a probability measure on } (\Omega_1, \mathcal{F}_1) \text{, } \\
@@ -234,7 +263,7 @@
     \end{align*} 
 \end{theorem*}
 
-\begin{definition*}
+\begin{definition*}{}
     A \textbf{homogeneous Markov chain} is a sequence of random elements $(X_t)_{t=1}^\infty$ taking values in \textbf{state space} $\mathcal{S} = (\mathcal{X},\mathcal{F})$ and with
     \begin{equation*}
         \mathbb{P}(X_{t+1} \in \cdot \hspace{0.2em} | X_1, \ldots, X_t) = \mathbb{P}(X_{t+1} \in \cdot \hspace{0.2em} | X_t) = \mu(X_t, \cdot), \hspace{1.5em} \text{a.s.}
@@ -242,16 +271,66 @@
     Here $\mu$ is a probability kernel from $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{X}, \mathcal{F})$.
 \end{definition*}
 
-\begin{definition*}
-    A $\mathbb{F}$-adapted sequence of random variables $(X_t)_{t \in \mathbb{N}_+}$(i.e. $X_t$ is $\mathcal{F}_t$-measurable for all $t \in {1, \ldots, n}$) is a $\mathbb{F}$-adapted \textbf{martingale} if
+\begin{definition*}{3.4}
+    A $\mathbb{F}$-adapted sequence of random variables $(X_t)_{t \in \mathbb{N}_+}$(i.e. $X_t$ is $\mathcal{F}_t$-measurable for all $t \in \mathbb{N}$) is a $\mathbb{F}$-adapted \textbf{martingale} if
     \begin{itemize}
-        \item[(a)]
-        \item[(b)] 
+        \item[(a)] $\mathbb{E}[|X_t|] < \infty \text{ for all } t.$
+        \item[(b)] $\mathbb{E}[X_{t+1} | \mathcal{F}_t] = X_t \text{ for all } t.$
     \end{itemize}
+    Supermartingale if less-than, submartingale if greater-than.
 \end{definition*}
+
+\begin{example*}{3.5}
+    $(Y_t)_{t \in \mathbb{N}}$ be a sequence of independent random variables with $\mathbb{P}(Y_t = 1) = \mathbb{P}(Y_t = -1) = \frac{1}{2}$.
+    Then the winnings after $t$ rounds is $S_t = \sum_{i=1}^{t} Y_i$, a martingale adapted to the filtration $(\mathcal{F}_t)_{t \in \mathbb{N}_+}$, where $\mathcal{F}_t = \sigma(Y_1, \ldots, Y_t)$.
+\end{example*}
+
+\begin{definition*}{3.6}
+    Let $\mathbb{F} = (\mathcal{F}_t)_{t \in \mathbb{N}}$ be a filtration.
+    A random variable $\tau \in \mathbb{N} \cup \{\infty\}$ is a \textbf{stopping time} with respect to the filtration $\mathbb{F}$ if
+    \begin{equation*}
+        \{\tau \leq t\} \in \mathcal{F}_t \text{ for all } t \in \mathbb{N}.
+    \end{equation*}
+    The $\sigma$-algebra generated by the stopping time $\tau$ is
+    \begin{equation*}
+        \mathcal{F}_\tau = \{A \in \mathcal{F}_\infty : A \cap \{\tau \leq t\} \in \mathcal{F}_t \text{ for all } t \in \mathbb{N} \}.
+    \end{equation*}
+\end{definition*}
+
+\begin{theorem*}{3.8}[Doob's Optional Stopping Theorem]
+    Let $\mathbb{F} = (\mathcal{F}_t)_{t \in \mathbb{N}}$ be a filtration and $(X_t)_{t \in \mathbb{N}}$ be an $\mathbb{F}$-adapted martingale.
+    Let $\tau$ be a stopping time with respect to $\mathbb{F}$,
+    and one of the following conditions is satisfied:
+    \begin{itemize}
+        \item[(a)] There exists an $n \in \mathbb{N}$ such that $\mathbb{P}(\tau > n) = 0$.
+        \item[(b)] $\mathbb{E}[\tau] < \infty$ and there exists a constant $c \in \mathbb{R}$ such that $|X_{t+1} - X_t| \leq c$ for all $t$, $\mathbb{E}[|X_{t+1} - X_t| | \mathcal{F}_t] \leq c$ a.s. for $\tau > t$.
+        \item[(c)] There exists a constant $c$ such that $|X_{t \wedge \tau}| \leq c$ a.s. for all $t \in \mathbb{N}$.
+    \end{itemize}
+    Then $X_\tau$ is almost surely well-defined and 
+    \begin{equation*}
+        \mathbb{E}[X_\tau] = \mathbb{E}[X_0].
+    \end{equation*}
+\end{theorem*}
+
+\begin{theorem*}{3.9}[Maximal inequality]
+    Let $(X_t)_{t=0}^\infty$ be a supermartingale with $X_t \geq 0$ a.s. for all $t \in \mathbb{N}$.
+    Then for any $\epsilon > 0$,
+    \begin{equation*}
+        \mathbb{P} \left( \sup_{t\in\mathbb{N}} X_t \geq \epsilon \right) \leq \frac{\mathbb{E}[X_0]}{\epsilon}.
+    \end{equation*}
+\end{theorem*}
+
+\begin{theorem*}{3.10}
+    Let $(X_t)_{t=0}^\infty$ be a submartingale with $X_t \geq 0$ a.s. for all $t \in \mathbb{N}$.
+    Then for any $\epsilon > 0$,
+    \begin{equation*}
+        \mathbb{P} \left( \max_{t\in {0,1,\ldots,n}} X_t \geq \epsilon \right) \leq \frac{\mathbb{E}[X_n]}{\epsilon}.
+    \end{equation*}
+
+\end{theorem*}
 %------------------------------------------------------------
 \subsection{Stochastic Bandits}
-\begin{definition*}
+\begin{definition*}{}
     A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
 \end{definition*}
 Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
