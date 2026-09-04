@@ -117,6 +117,7 @@
         \item A measure $\mu$ is a \textbf{probability measure} if $\mu(\Omega) = 1$.
         \item $(\Omega, \mathcal{F}, \mu)$ is called a \textbf{probability space} if $\mu$ is a probability measure on $(\Omega, \mathcal{F})$.
         \item A function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{measurable function} if $^\forall \hspace{0.1em} B \in \mathcal{B}(\mathbb{R})$, $X^{-1}(B) \in \mathcal{F}$.
+        \item A \textbf{filtration} is a sequence $(\mathcal{F}_t)_{t=0}^n$ of sub-$\sigma$-algebras of $\mathcal{F}$ where $\mathcal{F}_t \subseteq \mathcal{F}_{t+1}$ for all $t<n$.
     \end{itemize}
 \end{definition*}
 
@@ -189,21 +190,65 @@
 
 \begin{theorem*}[3.1]
     Let $\mu$ be a probability measure on a Borel space $S$ and $\lambda$ be the Lebesgue measure on $([0,1], \mathcal{B}([0,1]))$.
-    Then there exists a sequence of independent random element $X_1, X_2, \ldots$ on $([0,1], \mathbb{B}([0,1]), \lambda)$ such that $\lambda_{X_t}(\cdot) := \lambda(X^{-1}_t(\cdot)) = \mu(\cdot)$ for all $t$.
+    Then there exists a sequence of independent random element $X_1, X_2, \ldots$ on $([0,1], \mathcal{B}([0,1]), \lambda)$ such that $\lambda_{X_t}(\cdot) := \lambda(X^{-1}_t(\cdot)) = \mu(\cdot)$ for all $t$.
 \end{theorem*}
 
 \begin{definition*}
     For "countable" set $\mathcal{T}$, A stochastic process is a collection of random variables ${X_t : t \in \mathcal{T}}$.
 \end{definition*}
 
-\begin{theorem*}
-    Let Borel spaces $(\Omega_n, \mathcal{F}_n)$ and measures $\mu_n$ on $(\Omega_1 \times \cdots \times \Omega_n, \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n)$ for all $n \in \mathbb{N}$.
+\begin{theorem*}[3.2]
+    Let Borel spaces $(\Omega_n, \mathcal{F}_n)$ and measures $\mu_n$ on $(\Omega_1 \times \cdots \times \Omega_n, \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n)$ are given for each $n \in \mathbb{N}$.
     \begin{align*}
-        & ^\forall n \in \mathbb{N} \hspace{0.5em} \text{and} \hspace{0.5em} A \in \Omega_1 \otimes \cdots \otimes \Omega_n, \hspace{0.8em} \mu_{n+1}(A\times \Omega_{n+1}) = \mu_n (A) \\
+        & ^\forall n \in \mathbb{N} \hspace{0.5em} \text{and} \hspace{0.5em} A \in \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n, \hspace{0.8em} \mu_{n+1}(A\times \Omega_{n+1}) = \mu_n (A) \\
         &\implies \exists \text{ a probability space } (\Omega, \mathcal{F}, \mathbb{P}) \\
-        &\text{ and random elements } X_1, \ldots \text{ with } X_t : \Omega \rightarrow \Omega_t \text{ such that } \mathbb{P}_{X_1, \ldots, X_n} = \mu_n \text{ for all } n.
+        &\text{ and random elements } X_1, X_2, \ldots \text{ with } X_t : \Omega \rightarrow \Omega_t \text{ such that } \mathbb{P}_{X_1, \ldots, X_n} = \mu_n \text{ for all } n.
     \end{align*}
 \end{theorem*}
+
+\begin{definition*}
+    Let $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ be measurable spaces. 
+    A \textbf{probability kernel} or \textbf{Markov kernel} form $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{Y}, \mathcal{G})$ is a function $K : \mathcal{X} \times \mathcal{G} \rightarrow [0,1]$ such that
+    \begin{itemize}
+        \item[(a)] $K(x,\cdot)$ is a measure for all $x \in \mathcal{X}$ and
+        \item[(b)] $K(\cdot,A)$ is $\mathcal{F}$-measurable for all $A \in \mathcal{G}$. 
+    \end{itemize}
+    Notation: $K_x(A)$ or $K(A|x)$
+\end{definition*}
+
+\begin{definition*}
+    Let $K_1$ be a probability kernel from $(\mathcal{X}, \mathcal{F}) \rightarrow (\mathcal{Y},\mathcal{G})$ and $K_2$ be a probability kernel from $(\mathcal{Y}, \mathcal{G}) \rightarrow (\mathcal{Z},\mathcal{H})$.
+    Then the product kernel $K_1 \otimes K_2$ is the probability kernel from $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{Y} \times \mathcal{Z}, \mathcal{G} \otimes \mathcal{H})$ defined by
+    \begin{equation*}
+        (K_1 \otimes K_2)(x,A)= \int_{\mathcal{Y}}\int_{\mathcal{Z}}\mathbbm{1}_A ((y,z))K_2 (y,dz) K_1 (x,dy).
+    \end{equation*}
+\end{definition*}
+
+\begin{theorem*}[3.3]
+    Let $(\Omega_n, \mathcal{F}_n)_{n=1}^\infty$ be a sequence of measurable spaces.
+    \begin{align*}
+    & K_1 \text{ : a probability measure on } (\Omega_1, \mathcal{F}_1) \text{, } \\
+    & K_n \text{ : a probability kernel from } \Pi_{t=1}^{n-1} \Omega_t \text{ to } \Omega_n \text{ for } n \geq 2. \\
+    & \implies \exists \text{ a probability space } (\Omega, \mathcal{F}, \mathbb{P}) \\
+    & \text{ and random elements } (X_t)_{t=1}^\infty \text{ with } X_t : \Omega \rightarrow \Omega_t \text{ such that } \mathbb{P}_{X_1, \ldots, X_n} = \bigotimes_{t=1}^n K_t \text{ for all } n.
+    \end{align*} 
+\end{theorem*}
+
+\begin{definition*}
+    A \textbf{homogeneous Markov chain} is a sequence of random elements $(X_t)_{t=1}^\infty$ taking values in \textbf{state space} $\mathcal{S} = (\mathcal{X},\mathcal{F})$ and with
+    \begin{equation*}
+        \mathbb{P}(X_{t+1} \in \cdot \hspace{0.2em} | X_1, \ldots, X_t) = \mathbb{P}(X_{t+1} \in \cdot \hspace{0.2em} | X_t) = \mu(X_t, \cdot), \hspace{1.5em} \text{a.s.}
+    \end{equation*}
+    Here $\mu$ is a probability kernel from $(\mathcal{X}, \mathcal{F})$ to $(\mathcal{X}, \mathcal{F})$.
+\end{definition*}
+
+\begin{definition*}
+    A $\mathbb{F}$-adapted sequence of random variables $(X_t)_{t \in \mathbb{N}_+}$(i.e. $X_t$ is $\mathcal{F}_t$-measurable for all $t \in {1, \ldots, n}$) is a $\mathbb{F}$-adapted \textbf{martingale} if
+    \begin{itemize}
+        \item[(a)]
+        \item[(b)] 
+    \end{itemize}
+\end{definition*}
 %------------------------------------------------------------
 \subsection{Stochastic Bandits}
 \begin{definition*}
