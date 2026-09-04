@@ -55,6 +55,7 @@
         where $H_0$ represents the initial condition.
     \end{itemize}
 \end{definition*}
+
 \begin{example*}
     An environment is called a \textbf{stochastic Bernoulli bandit} if 
     \begin{itemize}
@@ -72,6 +73,7 @@
         \end{aligned}
     \end{equation*}
 \end{example*}
+
 \begin{definition*}
     \textbf{Stochastic stationary bandits} are the environments restricted to generate the rewards in response to each action from a distribution independent of the previous history.
     \begin{example*}[Linear Stochastic Bandits]
@@ -86,6 +88,7 @@
 %------------------------------------------------------------
 
 \subsection{Foundations of Probability}
+
 \begin{definition*}Let an \textbf{event set} $\Omega$ be given.
     \leavevmode
     \begin{itemize}
@@ -100,6 +103,7 @@
         \item $\mathcal{B}(\mathbb{R})$ is the \textbf{Borel $\sigma$-algebra} on $\mathbb{R}$, which is the smallest $\sigma$-algebra containing all open intervals $(a, b)$ for $a, b \in \mathbb{R}$.
     \end{itemize}
 \end{definition*}
+
 \begin{definition*}Let a measurable space $(\Omega, \mathcal{F})$ be given.
     \leavevmode
     \begin{itemize}
@@ -115,6 +119,7 @@
         \item A function $X : \Omega \mapsto \mathbb{R}$ is called a \textbf{measurable function} if $^\forall \hspace{0.1em} B \in \mathcal{B}(\mathbb{R})$, $X^{-1}(B) \in \mathcal{F}$.
     \end{itemize}
 \end{definition*}
+
 \begin{definition*}Let a measure space $(\Omega, \mathcal{F}, \mu)$ be given.
     \leavevmode
     \begin{itemize}
@@ -125,6 +130,7 @@
         \item A function $f : \Omega \mapsto \mathbb{R}$ is called \textbf{integrable} if $\int_{\Omega} |f| d\mu < \infty$.
     \end{itemize}
 \end{definition*}
+
 \begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ be given.
     \leavevmode
     \begin{itemize}
@@ -134,6 +140,7 @@
         \item Two random variables $X, Y$ are called \textbf{independent} if $^\forall \hspace{0.1em} A, B \in \mathcal{B}(\mathbb{R})$, $\mathbb{P}[X \in A, Y \in B] = \mathbb{P}[X \in A] \cdot \mathbb{P}[Y \in B]$.
     \end{itemize}
 \end{definition*}
+
 \begin{definition*}Let a probability space $(\Omega, \mathcal{F}, \mathbb{P})$ and a random variable $X$ be given.
     \leavevmode
     \begin{itemize}
@@ -145,6 +152,7 @@
         \end{equation*}
     \end{itemize}
 \end{definition*}
+
 \begin{theorem*}[2.11]
     If $(\Omega, \mathcal{F}, \mathbb{P})$ is a probability space and $X$ is a integrable random variable and $\mathcal{H} \subseteq \mathcal{F}$ is a sub-$\sigma$-algebra, there exists a unique (almost surely) random variable $\mathbb{E}[X|\mathcal{H}]$ such that for all $H \in \mathcal{H}$,
     \begin{equation*}
@@ -165,11 +173,37 @@
         \item[\text{(5)}] If $\mathcal{G}_1 \subseteq \mathcal{G}_2$, then $\mathbb{E}[X|\mathcal{G}_1] = \mathbb{E}[\mathbb{E}[X|\mathcal{G}_2]|\mathcal{G}_1]$ almost surely.
     \end{itemize}
 \end{theorem*}
+
 %------------------------------------------------------------
+
 \subsection{Stochastic Processes and Markov Chains}
+
 \begin{definition*}
-    T
+    Let two measurable spaces $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ be given.
+    \leavevmode
+    \begin{itemize}
+        \item $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ are called \textbf{isomorphic} if there exists a bijective function $f : \mathcal{X} \mapsto \mathcal{Y}$ such that $A \in \mathcal{F} \iff f(A) \in \mathcal{G}$.
+        \item $(\mathcal{X}, \mathcal{F})$ is a \textbf{Borel space} if it is isomorphic to $(\mathbb{R}, \mathcal{B}(A))$ for some set $A \in \mathcal{B}(\mathbb{R})$.
+    \end{itemize}
 \end{definition*}
+
+\begin{theorem*}[3.1]
+    Let $\mu$ be a probability measure on a Borel space $S$ and $\lambda$ be the Lebesgue measure on $([0,1], \mathcal{B}([0,1]))$.
+    Then there exists a sequence of independent random element $X_1, X_2, \ldots$ on $([0,1], \mathbb{B}([0,1]), \lambda)$ such that $\lambda_{X_t}(\cdot) := \lambda(X^{-1}_t(\cdot)) = \mu(\cdot)$ for all $t$.
+\end{theorem*}
+
+\begin{definition*}
+    For "countable" set $\mathcal{T}$, A stochastic process is a collection of random variables ${X_t : t \in \mathcal{T}}$.
+\end{definition*}
+
+\begin{theorem*}
+    Let Borel spaces $(\Omega_n, \mathcal{F}_n)$ and measures $\mu_n$ on $(\Omega_1 \times \cdots \times \Omega_n, \mathcal{F}_1 \otimes \cdots \otimes \mathcal{F}_n)$ for all $n \in \mathbb{N}$.
+    \begin{align*}
+        & ^\forall n \in \mathbb{N} \hspace{0.5em} \text{and} \hspace{0.5em} A \in \Omega_1 \otimes \cdots \otimes \Omega_n, \hspace{0.8em} \mu_{n+1}(A\times \Omega_{n+1}) = \mu_n (A) \\
+        &\implies \exists \text{ a probability space } (\Omega, \mathcal{F}, \mathbb{P}) \\
+        &\text{ and random elements } X_1, \ldots \text{ with } X_t : \Omega \rightarrow \Omega_t \text{ such that } \mathbb{P}_{X_1, \ldots, X_n} = \mu_n \text{ for all } n.
+    \end{align*}
+\end{theorem*}
 %------------------------------------------------------------
 \subsection{Stochastic Bandits}
 \begin{definition*}
