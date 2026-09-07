@@ -334,5 +334,40 @@
     A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
 \end{definition*}
 Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
+\begin{definition*}{}
+    A set of bandits $\mathcal{E}$ for which $\nu \in \mathcal{E}$ is called the environment class.
+    \begin{itemize}{}
+        \item An environment class $\mathcal{E}$ is \textbf{unstructured} if $\mathcal{A}$ is finite and
+        \begin{equation*}
+            ^\forall \hspace{0.1em} a \in \mathcal{A}, \hspace{0.2em} \exists \text{ sets of distributions } \mathcal{M}_a \text{ such that } \mathcal{E} = \{ \nu = (P_a : a \in \mathcal{A}) : P_a \in \mathcal{M}_a, \hspace{0.2em} ^\forall \hspace{0.1em} a \in \mathcal{A}\}.
+        \end{equation*}
+        or, in short, $\mathcal{E} = \times_{a \in \mathcal{A}} \mathcal{M}_a$.
+        \item Environment classes with finite number of degrees of freedom are called \textbf{parametric} (Bernoulli).
+        \item Environment classes that are not parametric are called \textbf{nonparametric} (subgaussian).
+        \item An environment class is called \textbf{structured} if it is not unstructured.
+    \end{itemize}
+\end{definition*}
+
+\begin{example*}{4.1}
+    Let $\mathcal{A} = \{1, 2\}$ and $\mathcal{E} = \{ (\mathcal{B}(\theta), \mathcal{B}(1-\theta)): \theta \in [0,1]\}$ where $\mathcal{B}(\theta)$ denotes the Bernoulli distribution with mean $\theta$.
+    Then $\mathcal{E}$ is a structured parametric environment class.
+\end{example*}
+
+\begin{example*}{4.2} [Stochastic linear bandit]
+    Let $\mathcal{A} \subseteq \mathbb{R}^d$ and $\theta \in \mathbb{R}^d$ and
+    \begin{equation*}
+        \nu_\theta = ( \mathcal{N}(\langle a, \theta \rangle, 1) : a \in \mathcal{A} ) \hspace{2em} \text{ and } \hspace{0.3em} \mathcal{E} = \{ \nu_\theta : \theta \in \mathbb{R}^d \}.
+    \end{equation*}
+\end{example*}
+
+\begin{example*}{4.3}
+    Consider an undirected graph $G$ with vertices $V={1, \ldots, |V|}$ and edges $E={1, \ldots, |E|}$.
+    In each round the learner chooses a path from vertex 1 to vertex $|V|$.
+    Then each edge $e \in [E]$ is removed from the graph with probability $1-\theta_e$ for unknown $\theta \in [0,1]^{|E|}$.
+    In this problem, $\mathcal{A}$ is the set of paths and
+    \begin{equation*}
+        \nu_\theta = \left( \mathcal{B}\left(\prod_{e \in a} \theta_e\right) : a \in \mathcal{A} \right) \hspace{2em} \text{ and } \hspace{0.3em} \mathcal{E} = \{ \nu_\theta : \theta \in [0,1]^{|E|} \}.
+    \end{equation*}
+\end{example*}
 
 \end{document}
