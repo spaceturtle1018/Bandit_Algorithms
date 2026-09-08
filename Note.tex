@@ -328,12 +328,14 @@
     \end{equation*}
 
 \end{theorem*}
+
 %------------------------------------------------------------
+
 \subsection{Stochastic Bandits}
 \begin{definition*}{}
     A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
 \end{definition*}
-Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
+Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ over $n$ rounds.
 \begin{definition*}{}
     A set of bandits $\mathcal{E}$ for which $\nu \in \mathcal{E}$ is called the environment class.
     \begin{itemize}{}
@@ -369,5 +371,126 @@ Here we are challenging to maximise the total reward $S_n = \sum_{t=1}^{n} X_t$ 
         \nu_\theta = \left( \mathcal{B}\left(\prod_{e \in a} \theta_e\right) : a \in \mathcal{A} \right) \hspace{2em} \text{ and } \hspace{0.3em} \mathcal{E} = \{ \nu_\theta : \theta \in [0,1]^{|E|} \}.
     \end{equation*}
 \end{example*}
+
+\begin{definition*}{}
+    Let $\nu = (P_a : a \in \mathcal{A})$ be a stochastic bandit.
+    \begin{equation*}
+        \mu_a(\nu) := \int_{-\infty}^{\infty} x \, dP_a(x)
+    \end{equation*}
+    Also let $\mu^*(\nu) := \max_{a \in \mathcal{A}} \mu_a(\nu)$, the largest mean of all the arms.
+\end{definition*}
+
+\begin{definition*}{}
+    The \textbf{regret} of policy $\pi$ on bandit instance $\nu$ is
+    \begin{equation*}
+        R_n (\pi, \nu) := n \mu^*(\nu) - \mathbb{E}\left[\sum_{t=1}^n X_t\right]
+    \end{equation*}
+    where the expectation is taken with respect to the probability measure on outcomes induced by the interaction of $\pi$ and $\nu$.
+\end{definition*}
+
+\begin{lemma*}{4.4}
+    Let $\nu$ be a stochastic bandit environment. Then
+    \begin{itemize}
+        \item $R_n(\pi, \nu) \geq 0$ for all policies $\pi$,
+        \item the policy $\pi$ choosing $A_t \in \arg\max_a \mu_a(\nu)$ for all $t$ satisfies $R_n(\pi, \nu) = 0$, and
+        \item if $R_n(\pi, \nu) = 0$ for some policy $\pi$, then $\mathbb{P} \left[\mu_{A_t}(\nu) = \mu^*(\nu) \right] = 1$ for all $t \in [n]$.
+    \end{itemize}
+\end{lemma*}
+
+\begin{proof}
+    (a) Since $\mu^*(\nu) = \max_{a \in \mathcal{A}} \mu_a(\nu)$,
+    \begin{equation*}
+        n \mu^*(\nu) \geq \mathbb{E} \left[ \sum_{t=1}^n \mu_{A_t}(\nu) \right].
+    \end{equation*}
+    By the linearity of expectation,
+    \begin{equation*}
+        \mathbb{E} \left[ \sum_{t=1}^n \mu_{A_t}(\nu) \right] = \sum_{t=1}^n \mathbb{E}\left[\mu_{A_t}(\nu)\right].
+    \end{equation*}
+    By the stochastic bandit assumption and the tower property,
+    \begin{align*}
+        \sum_{t=1}^n \mathbb{E}\left[\mu_{A_t}(\nu)\right] &= \sum_{t=1}^n \mathbb{E}\left[\mathbb{E}\left[X_t \mid H_{t-1}, A_t\right]\right] \\
+        &= \sum_{t=1}^n \mathbb{E}\left[X_t\right] \\
+        &= \mathbb{E}\left[\sum_{t=1}^n X_t\right],
+    \end{align*}
+    using linearity of expectation again. Therefore,
+    \begin{equation*}
+        R_n(\pi, \nu) = n \mu^*(\nu) - \mathbb{E}\left[\sum_{t=1}^n X_t\right] \geq 0.
+    \end{equation*}
+
+    (b) Let $\pi$ be the policy choosing $A_t \in \arg\max_a \mu_a(\nu)$ for all $t$. Then $\mu^*(\nu) = \mu_{A_t}(\nu)$ for all $t$, which implies
+    \begin{align*}
+        R_n(\pi, \nu) &= n \mu^*(\nu) - \mathbb{E}\left[\sum_{t=1}^n X_t\right] \\
+        &= \sum_{t=1}^n \left(\mu^*(\nu) - \mathbb{E}\left[\mu_{A_t}(\nu)\right]\right) \\
+        &= \mathbb{E}\left[\sum_{t=1}^n \left( \mu^*(\nu) - \mu_{A_t}(\nu)\right) \right] \\
+        &= 0
+    \end{align*}
+    and therefore $R_n(\pi, \nu) = 0$.
+
+    (c) Suppose $R_n(\pi, \nu) = 0$ for some policy $\pi$. Then
+    \begin{equation*}
+        \sum_{t=1}^n \mathbb{E}\left[\mu^*(\nu) - \mu_{A_t}(\nu)\right] = 0.
+    \end{equation*}
+    Since $\mu^*(\nu) - \mu_{A_t}(\nu) \geq 0$ for all $t$, $\mu^*(\nu) = \mu_{A_t}(\nu)$ almost surely for all $t \in \{1, \ldots, n\}$.
+    
+\end{proof}
+
+
+
+
+
+
+
+
+%-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+\begin{theorem*}{}[Cramér]
+    Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
+    Define $\mu_n$ to be the law of $S_n$.
+    Then $\mu_n$ satisfies a large deviation principle on $\mathbb{R}^d$ with rate function given by the Legendre transform of the cumulant generating function of $X_1$.
+    That is,
+    \begin{itemize}
+        \item For any closed set $F \subset \mathbb{R}^d$,
+        \begin{equation*}
+            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} I(x),
+        \end{equation*}
+        \item For any open set $G \subset \mathbb{R}^d$,
+        \begin{equation*}
+            \liminf_{n \to \infty} \frac{1}{n} \log \mu_n(G) \geq -\inf_{x \in G} I(x),
+        \end{equation*}
+    where $I(x)$ is the rate function given by the Legendre transform of the cumulant generating function of $X_1$.
+    \end{itemize}
+\end{theorem*}
+
+\begin{theorem*}{}[Gärtner-Ellis]
+    Suppose $X_1, \ldots, X_n$ are random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
+    Define $\mu_n$ to be the law of $S_n$.
+    Suppose the limit
+    \begin{equation*}
+        \Lambda(\lambda) := \lim_{n \to \infty} \frac{1}{n} \log \mathbb{E}\left[e^{n \langle \lambda, S_n \rangle}\right]
+    \end{equation*}
+    exists for all $\lambda \in \mathbb{R}^d$ and $0 \in \mathcal{D}_\Lambda^\circ$, where $\mathcal{D}_\Lambda$ is the effective domain of $\Lambda$.
+    Then
+    \begin{itemize}
+        \item For any closed set $F \subset \mathbb{R}^d$,
+        \begin{equation*}
+            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} I(x),
+        \end{equation*}
+        \item For any open set $G \subset \mathbb{R}^d$,
+        \begin{equation*}
+            \liminf_{n \to \infty} \frac{1}{n} \log \mu_n(G) \geq -\inf_{x \in G \cap \mathcal{F}} \Lambda^*(x),
+        \end{equation*}
+    where $\Lambda^*(x)$ is the rate function given by the Legendre transform of $\Lambda(\lambda)$, and $\mathcal{F}$ is the set of exposed points of $\Lambda^*(x)$.
+    \end{itemize}
+    Furthermore, if $\Lambda$ is essentially smooth and lower semicontinuous, then $\mathcal{F}$ can be replaced by the entire domain of $\Lambda^*$.(LDP holds)
+\end{theorem*}
 
 \end{document}
