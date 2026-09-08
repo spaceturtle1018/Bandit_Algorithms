@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1788853008.48095 "/Users/jiheesun/Desktop/Math/Bandit_Algorithms/Note.tex" "Note.pdf" "Note" 1788853008.80366 0
-  "/Users/jiheesun/Desktop/Math/Bandit_Algorithms/Note.tex" 1788853008.31983 26683 7da8985fca1074d3fc0e416f6655d0a2 ""
+["pdflatex"] 1788854568.86059 "/Users/jiheesun/Desktop/Math/Bandit_Algorithms/Note.tex" "Note.pdf" "Note" 1788854569.24189 0
+  "/Users/jiheesun/Desktop/Math/Bandit_Algorithms/Note.tex" 1788854568.57988 26688 2e8725ece1b38954fb1d30dc4b22cedd ""
   "/Users/jiheesun/Library/texlive/2025/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk" 1788418160.02765 6964 b91ccfb1e832a7be687902e89f8818e6 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -72,8 +72,8 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1750984552 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1750984498 3345733 0b1d5632772dda4049b233bbbab91c47 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "Note.aux" 1788853008.7603 624 2bca8abe4a19adce045b00ddf870471d "pdflatex"
-  "Note.tex" 1788853008.31983 26683 7da8985fca1074d3fc0e416f6655d0a2 ""
+  "Note.aux" 1788854569.19369 624 2bca8abe4a19adce045b00ddf870471d "pdflatex"
+  "Note.tex" 1788854568.57988 26688 2e8725ece1b38954fb1d30dc4b22cedd ""
   (generated)
   "Note.aux"
   "Note.log"
