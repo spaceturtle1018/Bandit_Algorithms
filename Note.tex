@@ -31,9 +31,6 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem*{corollary*}{Corollary}
 
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem*{remark*}{Remark}
-
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{manualexampleinner}{Example}
@@ -52,6 +49,16 @@
     {\renewcommand\themanualdefinitioninner{#1}}%
   \manualdefinitioninner
 }{\endmanualdefinitioninner}
+
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{manualremarkinner}{Remark}
+\newenvironment{remark*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualremarkinner}{\unskip}}
+    {\renewcommand\themanualremarkinner{#1}}%
+  \manualremarkinner
+}{\endmanualremarkinner}
+
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -431,11 +438,74 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
         \sum_{t=1}^n \mathbb{E}\left[\mu^*(\nu) - \mu_{A_t}(\nu)\right] = 0.
     \end{equation*}
     Since $\mu^*(\nu) - \mu_{A_t}(\nu) \geq 0$ for all $t$, $\mu^*(\nu) = \mu_{A_t}(\nu)$ almost surely for all $t \in \{1, \ldots, n\}$.
-    
+
 \end{proof}
 
+\begin{remark*}{}[Factorisation of the regret]
+    The learner cannot always achieve zero regret, so the relatively weak objective is to find a policy $\pi$ with
+    \begin{equation*}
+        ^\forall \hspace{0.2em} \nu \in \mathcal{E}, \hspace{1em} \lim_{n \to \infty} \frac{R_n(\pi, \nu)}{n} = 0.
+    \end{equation*}
+    Or further objective, finding some constants $C > 0$ and $p < 1$ such that
+    \begin{equation*} 
+        ^\forall \hspace{0.2em} \nu \in \mathcal{E}, \hspace{1em} R_n(\pi, \nu) \leq C n^p.
+    \end{equation*}
+    Another alternative is to find a function $C: \mathcal{E} \to [0, \infty)$ and $f : \mathbb{N} \to [0, \infty)$ such that
+    \begin{equation*}
+        ^\forall \hspace{0.2em} \nu \in \mathcal{E}, \hspace{1em} R_n(\pi, \nu) \leq C(\nu) f(n).
+    \end{equation*}
+    \textbf{Bayesian regret} is another candidate objective. For prior probability measure $Q$ on $\mathcal{E}$, 
+    the Bayesian regret is the average of the regret with respect to the prior $Q$, i.e.,
+    \begin{equation*}
+        \text{BR}_n(\pi, Q) = \int_{\mathcal{E}} R_n(\pi, \nu) \, dQ(\nu)
+    \end{equation*}
+    where the regret $R_n$ is measurable.
+\end{remark*}
 
+\begin{definition*}{}
+    Let $\nu = \left( P_a : a \in \mathcal{A} \right)$ be a stochastic bandit.
+    Then the \textbf{suboptimality gap} of action a is defined by
+    \begin{equation*}
+        \Delta_a(\nu) := \mu^*(\nu) - \mu_a(\nu).
+    \end{equation*}
+    Also let
+    \begin{equation*}
+        T_a(t) := \sum_{s=1}^t \mathbbm{1}\{A_s = a\}
+    \end{equation*}
+    be the number of times action $a$ has been chosen up to time $t$.
+\end{definition*}
 
+\begin{lemma*}{4.5}[Regret decomposition lemma]
+    For any policy $\pi$ and stochastic bandit $\nu$ with $\mathcal{A}$ finite or countable and horizon $n \in \mathbb{N}$, the regret $R_n$ of policy $\pi$ in $\nu$ satisfies
+    \begin{equation*}
+        R_n(\pi, \nu) = \sum_{a \in \mathcal{A}} \Delta_a(\nu) \mathbb{E}[T_a(n)].
+    \end{equation*}
+\end{lemma*}
+
+\begin{proof}
+    For any $t \in \mathbb{N}$, $\sum_{a \in \mathcal{A}} \mathbbm{1}\{A_t = a\} = 1$. Hence $S_n = \sum_t X_t = \sum_t \sum_a X_t \mathbbm{1}\{A_t = a\}$.
+    That is
+    \begin{equation*}
+        R_n = n \mu^* - \mathbb{E} [S_n] = \sum_{a \in \mathcal{A}} \sum_{t=1}^n \mathbb{E} [( \mu^* - X_t) \mathbbm{1}\{ A_t = a \}].
+    \end{equation*}
+    Since $\mathbb{E} [X_t \mid H_{t-1}, A_t] = \mu_{A_t}$, we have
+    \begin{align*}
+        \mathbb{E}[(\mu^* - X_t) \mathbbm{1}\{A_t = a\} \mid A_t] &= \mathbbm{1}\{A_t = a\} \mathbb{E}[\mu^* - X_t \mid A_t] \\
+        &= \mathbbm{1}\{A_t = a\} (\mu^* - \mu_a) \\
+        &= \mathbbm{1}\{A_t = a\} \Delta_a.
+    \end{align*}
+    Therefore
+    \begin{align*}
+        R_n &= \sum_{a \in \mathcal{A}} \sum_{t=1}^n \mathbb{E}[(\mu^* - X_t) \mathbbm{1}\{A_t = a\}] \\
+            &= \sum_{a \in \mathcal{A}} \sum_{t=1}^n \mathbb{E}[\mathbb{E}[(\mu^* - X_t) \mathbbm{1}\{A_t = a\} \mid A_t]] \\
+            &= \sum_{a \in \mathcal{A}} \sum_{t=1}^n \mathbb{E}[\Delta_a \mathbbm{1}\{A_t = a\}] \\
+            &= \sum_{a \in \mathcal{A}} \Delta_a \mathbb{E}[T_a(n)].
+    \end{align*}
+\end{proof}
+
+%------------------------------------------------------------
+
+\subsection{Concentration of measure}
 
 
 
