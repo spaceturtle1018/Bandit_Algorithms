@@ -3,6 +3,7 @@
 \usepackage{amsmath, amsthm}
 \usepackage{amssymb}
 \usepackage{enumitem}
+\usepackage{mathtools}
 \usepackage{bbm}
 
 
@@ -507,10 +508,57 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
 
 \subsection{Concentration of measure}
 
+\begin{definition*}{}
+    Let $X, X_1, X_2, \ldots, X_n$ be i.i.d. random variables with real values, 
+    and assume that the mean $\mu = \mathbb{E}[X] $ and variance $\sigma^2 = \mathbb{V}[X] < \infty$.
+    Then the \textbf{empirical mean} is defined by
+    \begin{equation*}
+        \hat{\mu} := \frac{1}{n} \sum_{i=1}^n X_i.
+    \end{equation*}
+    This is an unbiased estimator of the mean $\mu$, since $\mathbb{E}[\hat{\mu}] = \mathbb{E}\left[\frac{1}{n} \sum_{i=1}^n X_i\right] = \frac{1}{n} \sum_{i=1}^n \mathbb{E}[X_i] = \mu$.
+    Using independence of the $X_i$'s, the variance of the empirical mean is
+    \begin{equation*}
+        \mathbb{V}[\hat{\mu}] = \mathbb{E}\left[(\hat{\mu} - \mu)^2\right] = \frac{\sigma^2}{n}.
+    \end{equation*}
+    Two quantities 
+    \begin{equation*}
+        \mathbb{P}[\hat{\mu}\geq \mu + \epsilon] \quad \text{and} \quad \mathbb{P}[\hat{\mu}\leq \mu - \epsilon]
+    \end{equation*}
+    are called the \textbf{tail probabilities} of $\hat{\mu}-\mu$.
+\end{definition*}
 
+\begin{lemma*}{5.1}
+    Let $X$ be a random variable and let $\epsilon > 0$. Then
+    \begin{itemize}
+        \item[(a)] (Markov's inequality) : $\mathbb{P}[|X| \geq \epsilon] \leq \frac{\mathbb{E}[|X|]}{\epsilon}$.
+        \item[(b)] (Chebyshev's inequality) : $\mathbb{P}[|X - \mu| \geq \epsilon] \leq \frac{\sigma^2}{\epsilon^2}$.
+    \end{itemize}
+\end{lemma*}
 
+\begin{proof}
+    (a)
+    \begin{align*}
+        \mathbb{E}[|X|] &= \int_0^\infty \mathbb{P}[|X| \geq t] \, dt \\
+        &\geq \int_0^\epsilon \mathbb{P}[|X| \geq \epsilon] \, dt \\
+        &= \epsilon \mathbb{P}[|X| \geq \epsilon].
+    \end{align*}
+    (b)
+    \begin{align*}
+        \mathbb{P}[|X - \mu| \geq \epsilon] &= \mathbb{P}[(X - \mu)^2 \geq \epsilon^2] \\
+        &\leq \frac{\mathbb{E}[(X - \mu)^2]}{\epsilon^2}.
+    \end{align*}
+\end{proof}
 
-
+\begin{theorem*}{}[Central Limit Theorem]
+    Let $X_1, X_2, \ldots, X_n$ be i.i.d. random variables with finite second moment. Define
+    \begin{equation*}
+        S_n := \sum_{t=1}^n (X_t - \mu).
+    \end{equation*}
+    Then for $\sigma^2 >0$,
+    \begin{equation*}
+        \frac{S_n}{\sqrt{n} \sigma} \xlongrightarrow{ d } N(0,1).
+    \end{equation*}
+\end{theorem*}
 %-----------------------------------------
 
 
