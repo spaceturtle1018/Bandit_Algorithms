@@ -559,6 +559,29 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
         \frac{S_n}{\sqrt{n} \sigma} \xlongrightarrow{ d } N(0,1).
     \end{equation*}
 \end{theorem*}
+
+\begin{definition*}{5.2}
+    A random variable $X$ is \textbf{$\sigma$-subgaussian} if
+    \begin{equation*}
+        ^\forall \lambda \in \mathbb{R}, \quad \mathbb{E}\left[e^{\lambda X}\right] \leq e^{\frac{\lambda^2 \sigma^2}{2}}.
+    \end{equation*}
+    The \textbf{moment generating function} of $X$ is a function
+    \begin{equation*}
+        M_X(\lambda) := \mathbb{E}\left[e^{\lambda X}\right], \quad \lambda \in \mathbb{R}.
+    \end{equation*}
+    The \textbf{cumulant generating function} of $X$ is a function
+    \begin{equation*}
+        \Lambda_X(\lambda) := \log M_X(\lambda) = \log \mathbb{E}\left[e^{\lambda X}\right], \quad \lambda \in \mathbb{R}.
+    \end{equation*}
+\end{definition*}
+
+\begin{remark*}{}
+    $X$ is $\sigma$-subgaussian if and only if
+    \begin{equation*}
+        \Lambda_X(\lambda) \leq \frac{\lambda^2 \sigma^2}{2} \quad \forall \lambda \in \mathbb{R}.
+    \end{equation*}
+\end{remark*}
+
 %-----------------------------------------
 
 
