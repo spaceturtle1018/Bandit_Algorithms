@@ -75,7 +75,7 @@
   \manualexerciseinner
 }{\endmanualexerciseinner}
 
-\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage[ruled,linesnumbered,noline,noend]{algorithm2e}
 \RestyleAlgo{boxed}
 
 %------------------------------------------------------------
@@ -833,10 +833,35 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
 
 \subsection{The Upper Confidence Bound Algorithm}
 
+Note that for sequence of independent 1-subgaussian random variables $(X_t)_{t=1}^n$, mean $\mu$ and the empirical mean $\hat{\mu}_n = \frac{1}{n} \sum_{t=1}^n X_t$ satisfy
+\begin{equation*}
+    \mathbb{P}\left( \mu \geq \hat{\mu}_n + \sqrt{\frac{2 \log(1/\delta)}{n}} \right) \leq \delta, \hspace{1em} ^\forall \delta \in (0, 1).
+\end{equation*}
+Define
+\begin{equation*}
+    \text{UCB}_i (t-1, \delta) =
+    \begin{cases}
+        \infty, & \text{if } T_i(t-1) = 0, \\
+        \hat{\mu}_i(t-1) + \sqrt{\frac{2 \log(1/\delta)}{T_i(t-1)}}, & \text{if } T_i(t-1) > 0.
+    \end{cases}
+\end{equation*}
 
+\begin{algorithm}
+    \caption{\(\mathrm{UCB}(\delta)\)}
 
+    \textbf{Input} \(k\) and \(\delta\)
 
-
+    \For{\(t \in \{1,\ldots,n\}\)}{
+        Choose action
+        \begin{equation*}
+            A_t = \argmax_i \mathrm{UCB}_i(t-1,\delta)
+        \end{equation*}
+        \\
+        Observe reward \(X_t\) and update upper confidence bounds
+    }
+    
+    \textbf{end for}
+\end{algorithm}
 
 
 
