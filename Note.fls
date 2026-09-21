@@ -43,6 +43,16 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/mathtools/mhsetup.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/mathtools/mhsetup.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/bbm-macros/bbm.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/bbm-macros/bbm.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/ifthen.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/ifthen.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/xspace.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/xspace.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/relsize/relsize.sty
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/relsize/relsize.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT ./Note.aux
@@ -120,10 +130,12 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/bbm/bbm5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
 INPUT Note.aux
 INPUT /Users/jiheesun/Library/texlive/2025/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
@@ -134,6 +146,7 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb

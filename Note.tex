@@ -30,7 +30,13 @@
 \newtheorem*{proposition*}{Proposition}
 
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem*{corollary*}{Corollary}
+\newtheorem{manualcorollaryinner}{Corollary}
+\newenvironment{corollary*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualcorollaryinner}{\unskip}}
+    {\renewcommand\themanualcorollaryinner{#1}}%
+  \manualcorollaryinner
+}{\endmanualcorollaryinner}
 
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
@@ -59,6 +65,18 @@
     {\renewcommand\themanualremarkinner{#1}}%
   \manualremarkinner
 }{\endmanualremarkinner}
+
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{manualexerciseinner}{Exercise}
+\newenvironment{exercise*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualexerciseinner}{\unskip}}
+    {\renewcommand\themanualexerciseinner{#1}}%
+  \manualexerciseinner
+}{\endmanualexerciseinner}
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\RestyleAlgo{boxed}
 
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
@@ -504,6 +522,123 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \end{align*}
 \end{proof}
 
+\begin{exercise*}{4.11(a)}[Retirement policy]
+    \begin{proof} 
+        Let 
+        \begin{equation*}
+            \mathcal H_j := (\{1,2\}\times\mathbb R)^j, \qquad j\in\{0,\ldots,n\},
+        \end{equation*}
+        where $\mathcal H_0=\{\varnothing\}$. 
+        Fix $n\in\mathbb N$ and a policy $\pi=(\pi_j)_{j=1}^n$. 
+        Let $U_1,\ldots,U_n \overset{\mathrm{i.i.d.}}{\sim} \operatorname{Unif}(0,1)$. 
+        For $j\in\{0,\ldots,n-1\}$ and $h\in\mathcal H_j$, define 
+        \begin{equation*}
+            \psi_{j+1}(h):= 
+            \begin{cases} 
+                1, & U_{j+1}\leq \pi_{j+1}(1\mid h),\\ 
+                2, & U_{j+1}>\pi_{j+1}(1\mid h). 
+            \end{cases} 
+        \end{equation*}
+        Define 
+        \begin{equation*}
+            \Gamma:\bigcup_{j=0}^n\mathcal H_j \longrightarrow \bigcup_{j=0}^n\mathcal H_j 
+        \end{equation*}
+        such that
+        $^\forall j \in \{0, \ldots, n\} \text{ and } ^\forall h\in\mathcal H_j$, 
+        \begin{equation*}
+            \Gamma(h):= 
+            \begin{cases} 
+                h, & j=n,\\ 
+                h, & j<n \text{ and } \psi_{j+1}(h)=1,
+                \\ \Gamma\bigl(h,(2,\mu_2)\bigr), & j<n \text{ and } \psi_{j+1}(h)=2. 
+            \end{cases} 
+        \end{equation*}
+        Now fix $\nu=(\nu_1,\delta_{\mu_2})\in\mathcal E$. 
+        Let 
+        \begin{equation*} 
+            Y_1,Y_2,\ldots \overset{\mathrm{i.i.d.}}{\sim}\nu_1
+        \end{equation*} 
+        be the rewards obtained from arm $1$.
+        Define $\widetilde H_0,\ldots,\widetilde H_n$ and $A'_1,\ldots,A'_n$ by 
+        \begin{equation*}
+            \widetilde H_0:=\Gamma(\varnothing), 
+        \end{equation*}
+        and, for $t\in\{1,\ldots,n\}$, 
+        \begin{equation*}
+            A'_t:= 
+            \begin{cases} 
+                1, & \lvert\widetilde H_{t-1}\rvert<n,\\ 
+                2, & \lvert\widetilde H_{t-1}\rvert=n, 
+            \end{cases} 
+        \end{equation*}
+        and 
+        \begin{equation*}
+            \widetilde H_t:= 
+            \begin{cases} 
+                \Gamma\bigl(\widetilde H_{t-1},(1,Y_t)\bigr), & \lvert\widetilde H_{t-1}\rvert<n,\\ 
+                \widetilde H_{t-1}, & \lvert\widetilde H_{t-1}\rvert=n. 
+            \end{cases} 
+        \end{equation*}
+        Then $^\forall t \in \{0, \ldots, n \}, \widetilde{H}_t \in \bigcup_{j=0}^n\mathcal H_j$.
+        Define $^\forall h \in \mathcal{H}_{t-1} \text{ and } ^\forall a \in \{1,2\}$,
+        \begin{equation*}
+            H_{t-1}' \in \mathcal{H}_{t-1} \text{ and } \pi'_t(a\mid h) = \mathbb P(A'_t=a\mid H'_{t-1}=h).
+        \end{equation*}
+        for all $t\in\{1,\ldots,n\}$.
+        We first show that $\pi'$ is a retirement policy. 
+        Suppose that $A'_{t_0}=2$ for some $t_0\in\{1,\ldots,n\}$. 
+        Then 
+        \begin{equation*}
+            \lvert\widetilde H_{t_0-1}\rvert=n. 
+        \end{equation*}
+        Hence, by the definition of $\widetilde H_t$, 
+        \begin{equation*}
+            \widetilde H_s=\widetilde H_{t_0-1} \qquad\text{for all }s\geq t_0-1. 
+        \end{equation*}
+        Therefore, 
+        \begin{equation*}
+            A'_s=2 \qquad\text{for all }s\geq t_0. 
+        \end{equation*}
+        Thus, $\pi'$ is a retirement policy. 
+        Let 
+        \begin{equation*}
+            K:=T_1^{\pi'}(n) = \sum_{t=1}^n \mathbbm{1}_{\{A'_t=1\}}. 
+        \end{equation*}
+        By construction, 
+        \begin{equation*}
+            \widetilde H_K\in\mathcal H_n. 
+        \end{equation*}
+        Moreover, conditionally on each prefix of $\widetilde H_K$, its next action is chosen according to the same conditional distribution as under $\pi$, and its next reward has distribution $\nu_1$ if that action is $1$, and equals $\mu_2$ if that action is $2$. 
+        Consequently, 
+        \begin{equation*}
+            \widetilde H_K \overset{d}{=} H_n^\pi, 
+        \end{equation*}
+        where $H_n^\pi$ denotes the $n$-round history generated by $\pi$ in the bandit $\nu$. 
+        Since $K$ is exactly the number of occurrences of action $1$ in $\widetilde H_K$, it follows that 
+        \begin{equation*}
+            T_1^{\pi'}(n) \overset{d}{=} T_1^\pi(n). 
+        \end{equation*}
+        Hence, 
+        \begin{equation*}
+            \mathbb E_\nu^{\pi'}[T_1^{\pi'}(n)] = \mathbb E_\nu^\pi[T_1^\pi(n)]. 
+        \end{equation*}
+        Since $T_2(n)=n-T_1(n)$, 
+        \begin{equation*}
+            \mathbb E_\nu^{\pi'}[T_2^{\pi'}(n)] = \mathbb E_\nu^\pi[T_2^\pi(n)]. 
+        \end{equation*}
+        Finally, by the regret decomposition lemma, 
+        \begin{align*} 
+            R_n(\pi',\nu) &= \Delta_1(\nu)\mathbb E_\nu^{\pi'}[T_1^{\pi'}(n)] + \Delta_2(\nu)\mathbb E_\nu^{\pi'}[T_2^{\pi'}(n)]\\ 
+            &= \Delta_1(\nu)\mathbb E_\nu^\pi[T_1^\pi(n)] + \Delta_2(\nu)\mathbb E_\nu^\pi[T_2^\pi(n)]\\
+            &= R_n(\pi,\nu). 
+        \end{align*} 
+        Therefore, 
+        \begin{equation*}
+        R_n(\pi',\nu)\leq R_n(\pi,\nu) 
+        \end{equation*}
+        for every $\nu\in\mathcal E$. 
+    \end{proof}
+\end{exercise*}
 %------------------------------------------------------------
 
 \subsection{Concentration of measure}
@@ -582,8 +717,121 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \end{equation*}
 \end{remark*}
 
+\begin{theorem*}{5.3}
+    If $X$ is $\sigma$-subgaussian, then for all $\epsilon \geq 0$,
+    \begin{equation*}
+        \mathbb{P}[X \geq \epsilon] \leq \exp\left(-\frac{\epsilon^2}{2\sigma^2}\right).
+    \end{equation*}
+\end{theorem*}
+
+\begin{proof}
+    Let $\lambda > 0$. By Markov's inequality,
+    \begin{equation*}
+        \mathbb{P}[X \geq \epsilon] = \mathbb{P}[e^{\lambda X} \geq e^{\lambda \epsilon}] \leq \frac{\mathbb{E}[e^{\lambda X}]}{e^{\lambda \epsilon}} \leq \frac{e^{\frac{\lambda^2 \sigma^2}{2}}}{e^{\lambda \epsilon}} = \exp\left(\frac{\lambda^2 \sigma^2}{2} - \lambda \epsilon\right).
+    \end{equation*}
+    Letting $\lambda = \frac{\epsilon}{\sigma^2}$ gives
+    \begin{equation*}
+        \mathbb{P}[X \geq \epsilon] \leq \exp\left(-\frac{\epsilon^2}{2\sigma^2}\right).
+    \end{equation*}
+\end{proof}
+
+\begin{lemma*}{5.4}
+    Suppose $X$ is $\sigma$-subgaussian and $X_1, X_2$ are independent $\sigma_1, \sigma_2$-subgaussian, respectively.
+    Then
+    \begin{itemize}
+        \item[(a)] $\mathbb{E}[X] = 0 \text{ and } \mathbb{V}[X] \leq \sigma^2$.
+        \item[(b)] $cX$ is $|c|\sigma$-subgaussian for all $c \in \mathbb{R}$.
+        \item[(c)] $X_1 + X_2$ is $\sqrt{\sigma_1^2 + \sigma_2^2}$-subgaussian.
+    \end{itemize}
+\end{lemma*}
+
+\begin{proof}
+    \leavevmode
+    $\log x$ is convex on $(0, \infty)$, in the sense that for any $x, y > 0$ and $\theta \in [0, 1]$,
+    \begin{equation*}
+        \log(\theta x + (1-\theta)y) \geq \theta \log(x) + (1-\theta) \log(y).
+    \end{equation*}
+    \begin{itemize}
+        \item[(a)] By Jensen's inequality, $\log e^{\frac{\lambda^2 \sigma^2}{2}} \geq \log \mathbb{E}[e^{\lambda X}] \geq \mathbb{E}[\log e^{\lambda X}] = \lambda \mathbb{E}[X]$. 
+        That is, $\mathbb{E}[X] \leq \frac{\lambda \sigma^2}{2}$ for all $\lambda \in \mathbb{R}$, which implies $\mathbb{E}[X] = 0$. 
+        Also,
+        \begin{equation*}
+            \mathbb{E}[e^{\lambda X}] + \mathbb{E}[e^{-\lambda X}] \leq 2 e^{\frac{\lambda^2 \sigma^2}{2}}, \hspace{0.2cm} ^\forall \lambda \in \mathbb{R}.
+        \end{equation*}
+        Hence,
+        \begin{equation*}
+            \mathbb{E}\left[\frac{e^{\lambda X} - e^{-\lambda X} - 2}{\lambda^2}\right] \leq \frac{e^{\frac{2(\lambda^2 \sigma^2) - 1}{2}}}{\lambda^2}.
+        \end{equation*}
+        Here
+        \begin{equation*}
+            \frac{e^{\lambda X} - e^{-\lambda X}}{\lambda^2} = \frac{2(\cosh(\lambda X) - 1)}{\lambda^2},
+        \end{equation*}
+        which is non-negative and $\frac{2(\cosh(\lambda X) - 1)}{\lambda^2} \to X^2$ as $\lambda \to 0$.
+        Therefore, by Fatou's lemma,
+        \begin{equation*}
+            \mathbb{E}[X^2] \leq \liminf_{\lambda \to 0} \mathbb{E}\left[\frac{2(\cosh(\lambda X) - 1)}{\lambda^2}\right] \leq \lim_{\lambda \to 0} \frac{e^{\frac{2(\lambda^2 \sigma^2) - 1}{2}}}{\lambda^2} = \sigma^2.
+        \end{equation*}
+        \item[(b)] $^\forall \lambda \in \mathbb{R}, \hspace{0.2em} \mathbb{E}[e^{\lambda cX}] = \mathbb{E}[e^{(c\lambda) X}] \leq e^{\frac{(c\lambda)^2 \sigma^2}{2}} = e^{\frac{\lambda^2 (c\sigma)^2}{2}}$, which shows that $cX$ is $|c|\sigma$-subgaussian.
+        \item[(c)] $^\forall \lambda \in \mathbb{R}, \hspace{0.2em} \mathbb{E}[e^{\lambda (X_1 + X_2)}] = \mathbb{E}[e^{\lambda X_1}] \mathbb{E}[e^{\lambda X_2}] \leq e^{\frac{\lambda^2 \sigma_1^2}{2}} e^{\frac{\lambda^2 \sigma_2^2}{2}} = e^{\frac{\lambda^2 (\sigma_1^2 + \sigma_2^2)}{2}}$, which shows that $X_1 + X_2$ is $\sqrt{\sigma_1^2 + \sigma_2^2}$-subgaussian.
+    \end{itemize}
+\end{proof}
+
+\begin{corollary*}{5.5}
+    Assume $X_i - \mu$ are independent, $\sigma$-subgaussian random variables.
+    Then for any $\epsilon \geq 0$,
+    \begin{equation*}
+        \mathbb{P}(\hat{\mu} \geq \mu + \epsilon) \leq \exp\left(-\frac{n \epsilon^2}{2 \sigma^2}\right) \hspace{0.5em} \text{ and } \hspace{0.7em} \mathbb{P}(\hat{\mu} \leq \mu - \epsilon) \leq \exp\left(-\frac{n \epsilon^2}{2 \sigma^2}\right),
+    \end{equation*}
+    where $\hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i$.
+\end{corollary*}
+
+\begin{proof}
+    By Lemma 5.4, $\hat{\mu} - \mu$ is $\frac{\sigma}{\sqrt{n}}$-subgaussian. Therefore, for any $\epsilon \geq 0$,
+    \begin{equation*}
+        \mathbb{P}(\hat{\mu} \geq \mu + \epsilon) \leq \exp\left(-\frac{n \epsilon^2}{2 \sigma^2}\right) \hspace{0.5em} \text{ and } \hspace{0.7em} \mathbb{P}(\hat{\mu} \leq \mu - \epsilon) \leq \exp\left(-\frac{n \epsilon^2}{2 \sigma^2}\right)
+    \end{equation*}
+    by Theorem 5.3.
+\end{proof}
 %-----------------------------------------
 
+\subsection{The Explore-Then-Commit Algorithm}
+
+From now on, we assume that all bandit instances are in $\mathcal{E}_{\text{SG}}^k(1)$, which means the reward distribution of all arms is 1-subgaussian.
+Let $\hat{\mu}_i(t)$ be the average reward received from arm $i$ up to round $t$.
+Formally,
+\begin{equation*}
+    \hat{\mu}_i (t) = \frac{1}{T_i (t)} \sum_{s=1}^{t} \mathbbm{1}\{A_s = i \} X_s,
+\end{equation*}
+where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times arm $i$ has been played up to round $t$.
+
+\begin{algorithm}
+    \caption{ETC Algorithm}
+
+    \KwIn{m}
+
+    In round t choose action
+    \begin{equation*}
+        A_t = 
+        \begin{cases}
+            (t \text{ mod } k) + 1, & \text{if } t \leq mk, \\
+            \argmax_i \hat{\mu}_i(mk) & \text{if } t > mk,
+        \end{cases}
+    \end{equation*}
+\end{algorithm}
+
+\begin{theorem*}{6.1}
+    Suppose ETC with 1-subgaussian bandit and $1 \leq m \leq n/k$.
+    Then
+    \begin{equation*}
+        R_n \leq m \sum_{i=1}^{k} \Delta_i + (n-mk)\sum_{i=1}^{k} \Delta_i \exp\left(-\frac{m \Delta_i^2}{4}\right)
+    \end{equation*}
+\end{theorem*}
+\begin{proof}
+
+\end{proof}
+%-----------------------------------------
+
+\subsection{The Upper Confidence Bound Algorithm}
 
 
 
@@ -592,6 +840,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
 
 
 
+%-----------------------------------------
 
 \begin{theorem*}{}[Cramér]
     Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
@@ -601,13 +850,15 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \begin{itemize}
         \item For any closed set $F \subset \mathbb{R}^d$,
         \begin{equation*}
-            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} I(x),
+            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} \Lambda^*(x),
         \end{equation*}
         \item For any open set $G \subset \mathbb{R}^d$,
         \begin{equation*}
-            \liminf_{n \to \infty} \frac{1}{n} \log \mu_n(G) \geq -\inf_{x \in G} I(x),
+            \liminf_{n \to \infty} \frac{1}{n} \log \mu_n(G) \geq -\inf_{x \in G} \Lambda^*(x),
         \end{equation*}
-    where $I(x)$ is the rate function given by the Legendre transform of the cumulant generating function of $X_1$.
+    where $\Lambda^*(x) 
+    = \sup\limits_{\lambda \in \mathbb{R}^d} \left\{ \langle \lambda, x \rangle - \Lambda(\lambda) \right\} 
+    = \sup\limits_{\lambda \in \mathbb{R}^d} \left\{ \langle \lambda, x \rangle - \log \mathbb{E}\left[e^{\langle \lambda, X_1 \rangle}\right] \right\}$.
     \end{itemize}
 \end{theorem*}
 
@@ -623,7 +874,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \begin{itemize}
         \item For any closed set $F \subset \mathbb{R}^d$,
         \begin{equation*}
-            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} I(x),
+            \limsup_{n \to \infty} \frac{1}{n} \log \mu_n(F) \leq -\inf_{x \in F} \Lambda^*(x),
         \end{equation*}
         \item For any open set $G \subset \mathbb{R}^d$,
         \begin{equation*}
@@ -631,7 +882,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
         \end{equation*}
     where $\Lambda^*(x)$ is the rate function given by the Legendre transform of $\Lambda(\lambda)$, and $\mathcal{F}$ is the set of exposed points of $\Lambda^*(x)$.
     \end{itemize}
-    Furthermore, if $\Lambda$ is essentially smooth and lower semicontinuous, then $\mathcal{F}$ can be replaced by the entire domain of $\Lambda^*$.(LDP holds)
+    Furthermore, if $\Lambda$ is essentially smooth and lower semicontinuous, then $\mathcal{F}$ can be replaced by the entire domain of $\Lambda^*$(i.e. LDP holds).
 \end{theorem*}
 
 \end{document}
