@@ -81,6 +81,8 @@
 %------------------------------------------------------------
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
 %------------------------------------------------------------
 
 \begin{document}
@@ -859,12 +861,139 @@ Define
         \\
         Observe reward \(X_t\) and update upper confidence bounds
     }
-    
+
     \textbf{end for}
 \end{algorithm}
 
+\begin{theorem*}{7.1}
+    Suppose UCB with stochastic k-armed 1-subgaussian bandits. Then for all $n$, if $\delta = 1/n$, then
+    \begin{equation*}
+        R_n \leq 3 \sum_{i=1}^k \Delta_i + \sum_{i: \Delta_i > 0} \frac{16 \log (n)}{\Delta_i}
+    \end{equation*}
+\end{theorem*}
 
+\begin{proof}
+    WLOG, assume that $\mu_1 = \mu^*$. Let $G_i$ be the 'good' event defined by
+    \begin{equation*}
+        G_i = \left\{ \mu_1 < \min\limits_{t \in \{1, \ldots, n\}} \mathrm{UCB}_1(t, \delta) \right\} \cap \left\{ \hat{\mu}_{i, u_i} + \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} < \mu_1 \right\}
+    \end{equation*}
+    where $u_i \in \{1, \ldots, n\}$.
+    Assume that $G_i$ holds for all $i \in \{1, \ldots, k\}$.
+    To make contradiction, suppose that $T_i (n) > u_i$.
+    Then there exists $t \in \{1, \ldots, n\}$ such that $T_i(t-1) = u_i$ and $A_t = i$.
+    Hence
+    \begin{align*}
+        \mathrm{UCB}_i(t-1, \delta) &= \hat{\mu}_i (t-1) + \sqrt{\frac{2 \log(1/\delta)}{T_i(t-1)}} \\
+        &= \hat{\mu}_{i, u_i} + \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} \\
+        &< \mu_1 \\
+        &\leq \mathrm{UCB}_1(t-1, \delta).
+    \end{align*}
+    Therefore, $A_t = \argmax_j \mathrm{UCB}_j(t-1, \delta) \neq i$, which is a contradiction.
+    On the other hand,
+    \begin{equation*}
+        G_i^c = \left\{ \mu_1 \geq \min\limits_{t \in \{1, \ldots, n\}} \mathrm{UCB}_1(t, \delta) \right\} \cup \left\{ \hat{\mu}_{i, u_i} + \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} \geq \mu_1 \right\}.
+    \end{equation*}
+    Former part bounded by
+    \begin{align*}
+        \mathbb{P}\left( \mu_1 \geq \min\limits_{t \in \{1, \ldots, n\}} \mathrm{UCB}_1(t, \delta) \right) 
+        &\leq \mathbb{P}\left(\mu_1 \geq \min_{s \in \{1, \ldots, n\}} \hat{\mu}_1(s) + \sqrt{\frac{2}{s}\log\left(\frac{1}{\delta}\right)} \right) \\
+        &\leq \mathbb{P}\left( \bigcup_{s \in \{1, \ldots ,n \}} \left\{\mu_1 \geq \hat{\mu}_1(s) + \sqrt{\frac{2}{s}\log\left(\frac{1}{\delta}\right)} \right\} \right) \\
+        &\leq \sum_{s \in \{1, \ldots, n\}} \mathbb{P}\left( \mu_1 \geq \hat{\mu}_1(s) + \sqrt{\frac{2}{s}\log\left(\frac{1}{\delta}\right)} \right) \\
+        &\leq \sum_{s \in \{1, \ldots, n\}} \delta = n \delta.
+    \end{align*}
+    For latter part, assume $u_i$ is chosen large enough that
+    \begin{equation*}
+        \Delta_i - \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} \geq c\Delta_i
+    \end{equation*}
+    for some $c \in (0, 1)$.
+    Then
+    \begin{align*}
+        \mathbb{P}\left( \hat{\mu}_{i, u_i} + \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} \geq \mu_1 \right) 
+        &= \mathbb{P}\left( \hat{\mu}_{i, u_i} - \mu_i \geq \Delta_i - \sqrt{\frac{2}{u_i}\log\left(\frac{1}{\delta}\right)} \right) \\
+        &\leq \mathbb{P}\left( \hat{\mu}_{i, u_i} - \mu_i \geq c \Delta_i \right) \\
+        &\leq \exp\left(-\frac{u_i (c \Delta_i)^2}{2}\right)
+    \end{align*}
+    by Cor.5.5.
+    Now we have
+    \begin{equation*}
+        \mathbb{P}(G_i^c) \leq n \delta + \exp\left(-\frac{u_i (c \Delta_i)^2}{2}\right).
+    \end{equation*}
+    Also
+    \begin{equation*}
+        \mathbb{E}[T_i (n)] = \mathbb{E}[\mathbbm{1}_{G_i}T_i(n)]+ \mathbb{E}[\mathbbm{1}_{G_i^c}T_i(n)].
+    \end{equation*}
+    Therefore, choosing 
+    \begin{equation*}
+        u_i = \ceil*{\frac{2\log\left(1/\delta\right)}{((1-c) \Delta_i)^2}}
+    \end{equation*}
+    follows that
+    \begin{equation*}
+        \mathbb{E}[T_i(n)] \leq u_i + 1 + n^{1-2c^2/(1-c)^2} = \ceil*{\frac{2\log\left(n^2\right)}{((1-c) \Delta_i)^2}} + 1 + n^{1-2c^2/(1-c)^2}.
+    \end{equation*}
+    Lastly, choosing $c=1/2$ follows that
+    \begin{equation*}
+        \mathbb{E}[T_i(n)] \leq \ceil*{\frac{16\log\left(n\right)}{\Delta_i^2}} + 2,
+    \end{equation*}
+    and regret decomposition lemma leads to 
+    \begin{align*}
+        R(n) &\leq \sum_{i: \Delta_i > 0} \Delta_i \left( \ceil*{\frac{16\log\left(n\right)}{\Delta_i^2}} + 2 \right) \\
+        &= \sum_{i: \Delta_i > 0} \left(\frac{16 \log (n)}{\Delta_i}+\Delta_i\right) + 2 \sum_{i: \Delta_i > 0} \Delta_i \\
+        &\leq 3 \sum_{i=1}^k \Delta_i + \sum_{i: \Delta_i > 0} \frac{16 \log (n)}{\Delta_i}.
+    \end{align*}
+\end{proof}
 
+\begin{theorem*}{7.2}
+    Suppose $\nu \in \mathcal{E}_{\mathrm{SG}}^k(1)$ and $\delta=1/n^2$. Then regret of the UCB algorithm is bounded by
+    \begin{equation*}
+        R(n) \leq 8\sqrt{nk \log (n)} + 3 \sum_{i=1}^k \Delta_i.
+    \end{equation*}
+\end{theorem*}
+
+\begin{proof}
+    Let $\Delta > 0$ be some value to be determined later.
+    Recall from proof of 7.1,
+    \begin{equation*}
+        \mathbb{E}[T_i (n)] \leq 3 + \frac{16 \log (n)}{\Delta_i^2}.
+    \end{equation*}
+    Hence regret decomposition lemma follows that
+    \begin{align*}
+        R_n &= \sum_{i: \Delta_i > 0} \Delta_i \mathbb{E}[T_i(n)] \\
+        &= \sum_{i: \Delta_i < \Delta} \Delta_i \mathbb{E}[T_i(n)] + \sum_{i: \Delta_i \geq \Delta} \Delta_i \mathbb{E}[T_i(n)] \\
+        &\leq n\Delta + \sum_{i: \Delta_i \geq \Delta} \left( 3\Delta_i + \frac{16 \log (n)}{\Delta_i} \right) \\
+        &\leq n\Delta + 3 \sum_{i=1}^k \Delta_i + \frac{16 k \log (n)}{\Delta} \\
+        &\leq 8\sqrt{nk \log (n)} + 3 \sum_{i=1}^k \Delta_i.
+    \end{align*}
+    by choosing $\Delta = \sqrt{\frac{16 k \log (n)}{n}}$.
+\end{proof}
+
+\begin{exercise*}{7.4}[Phased UCB 1]
+    Consider the following algorithm, called phased UCB;
+    \begin{algorithm}
+        \caption{A phased version of UCB}
+        \textbf{Input } $k$ and $\delta$
+
+        Choose each arm once
+
+        \For{$l=1,2,\ldots$}{
+            Compute $A_l = \argmax_i \mathrm{UCB}_i(t-1, \delta)$
+
+            Choose arm $A_l$ and exactly $2^l$ times}
+        \textbf{end for}
+    \end{algorithm}
+    \begin{itemize}
+        \item[(a)] State and prove a bound on the regret for this version of UCB.
+        \item[(b)] Compare with Theorem 7.1.
+        \item[(c)] How would the result change if the $l$th phase had a length of $\ceil{\alpha^l}$ with $\alpha > 1$?
+    \end{itemize}
+\end{exercise*}
+\begin{proof}[proof of Exercise 7.4]
+    \leavevmode
+    \begin{itemize}
+        \item[(a)] Let $k = 2$, $L$ be some large constant($\geq 3$), $n=2^{L+1}$, $\delta=n^{-2}$, and $q=2\sqrt{\log(n)}$. 
+        Also let two arms attain deterministic reward, $\mu_1 = 0$, $\mu_2 = - \Delta$, respectively.
+    \end{itemize}
+
+\end{proof}
 %-----------------------------------------
 
 \begin{theorem*}{}[Cramér]
