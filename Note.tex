@@ -75,6 +75,15 @@
   \manualexerciseinner
 }{\endmanualexerciseinner}
 
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{manualsolutioninner}{Solution}
+\newenvironment{solution*}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\themanualsolutioninner}{\unskip}}
+    {\renewcommand\themanualsolutioninner{#1}}%
+  \manualsolutioninner
+}{\endmanualsolutioninner}
+
 \usepackage[ruled,linesnumbered,noline,noend]{algorithm2e}
 \RestyleAlgo{boxed}
 
@@ -986,14 +995,82 @@ Define
         \item[(c)] How would the result change if the $l$th phase had a length of $\ceil{\alpha^l}$ with $\alpha > 1$?
     \end{itemize}
 \end{exercise*}
-\begin{proof}[proof of Exercise 7.4]
+\begin{solution*}{}
     \leavevmode
     \begin{itemize}
         \item[(a)] Let $k = 2$, $L$ be some large constant($\geq 3$), $n=2^{L+1}$, $\delta=n^{-2}$, and $q=2\sqrt{\log(n)}$. 
-        Also let two arms attain deterministic reward, $\mu_1 = 0$, $\mu_2 = - \Delta$, respectively.
+        Also let two arms attain deterministic reward, $\mu_1 = 0$, $\mu_2 = - \Delta$, respectively. ($\Delta > 0$)
+        In this setting, the algorithm chooses each arm once initially and then goes to round 3.
+        Here learner gets UCB
+        \begin{equation*}
+            UCB_1(2, \delta) = q, \quad UCB_2(2, \delta) = -\Delta + q
+        \end{equation*}
+        and hence chooses arm 1 in round 3, and 4. Explicit simulation will be following;
+        \begin{center}
+            \begin{tabular}{c|cccc}
+                \hline
+                $t$ & $l$ & $\text{UCB}_1$ & $\text{UCB}_2$ & Next action \\
+                \hline
+                1 & 0 & $\infty$ & $\infty$ & 1\\
+                2 & 0 & $q$ & $\infty$ & 2\\
+                3 & 1 & $q$ & $-\Delta + q$ & 1\\
+                4 & 1 & $q/\sqrt{2}$ & $-\Delta + q$ & 1\\
+                5 & 2 & $q/\sqrt{3}$ & $-\Delta + q$ & 1\\
+                $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ \\
+                $2^L$ & $L-1$ & $q/\sqrt{2^L -2}$ & $-\Delta + q$ & 1\\
+                $2^L + 1$ & $L$ & $q/\sqrt{2^L -1}$ & $-\Delta + q$ & 2\\
+                $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ \\
+                \hline
+            \end{tabular}
+        \end{center}
+        if we choose $\Delta$ with
+        \begin{equation*}
+            \frac{q}{\sqrt{2^L - 1}} < q - \Delta < \frac{q}{\sqrt{2^{L-1} - 1}}.
+        \end{equation*}
+        Then the regret will be dominated by the suboptimal arm 2 in the last phase, giving
+        \begin{equation*}
+            R_n \geq \Delta \cdot 2^L = \frac{n}{2}\Delta.
+        \end{equation*}
+        This example shows that the phased UCB algorithm can obtain linear regret,
+        \begin{equation*}
+            R_n \leq n \cdot \max_i \Delta_i,
+        \end{equation*}
+        which is trivial.
+        \item[(b)] The above example of (a) shows that the phased UCB algorithm can get linear regret, 
+        while Theorem 7.1 shows that the standard UCB always get lower than sublinear regret.
+        \item[(c)] Still get linear regret for the phased UCB algorithm with any constant $\alpha > 1$.
     \end{itemize}
+\end{solution*}
 
-\end{proof}
+\begin{exercise*}{7.5}[Phased UCB 2]
+    Consider the following another phased version of UCB;
+    \begin{algorithm}
+        \textbf{Input } $k$ and $\delta$
+
+        Choose each arm once
+
+        \For{$l = 1, 2, \ldots$}{
+            Let $t_l = t$
+
+            Compute $A_l = \argmax_i \mathrm{UCB}_i(t_l-1, \delta)$
+
+            Choose arm $A_l$ until round $t$ such that $T_{i}(t) \geq \alpha T_{i}(t_l-1)$
+        }
+        \textbf{end for}
+    \end{algorithm}
+    \begin{itemize}
+        \item[(a)] State and prove a bound on the regret for this version of UCB with $\alpha = 2$.
+        \item[(b)] Compare with previous exercise and Theorem 7.1.
+        \item[(c)] Repeat (a) and (b) for $\alpha > 1$.
+        \item[(d)] Implement theses alogorithms and compare them empirically to UCB$(\delta)$
+    \end{itemize}
+\end{exercise*}
+
+\begin{solution*}{solution of Exercise 7.5}
+    \begin{itemize}
+        \item[(a)] 
+    \end{itemize}
+\end{solution*}
 %-----------------------------------------
 
 \begin{theorem*}{}[Cramér]
