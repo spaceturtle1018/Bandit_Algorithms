@@ -1054,7 +1054,7 @@ Define
 
             Compute $A_l = \argmax_i \mathrm{UCB}_i(t_l-1, \delta)$
 
-            Choose arm $A_l$ until round $t$ such that $T_{i}(t) \geq \alpha T_{i}(t_l-1)$
+            Choose arm $A_l$ until round $t$ such that $T_{A_l}(t) \geq \alpha T_{A_l}(t_l-1)$
         }
         \textbf{end for}
     \end{algorithm}
@@ -1066,9 +1066,54 @@ Define
     \end{itemize}
 \end{exercise*}
 
-\begin{solution*}{solution of Exercise 7.5}
+\begin{solution*}{}
+    \leavevmode
+    WLOG, assume that arm 1 is optimal.
     \begin{itemize}
-        \item[(a)] 
+        \item[(a)] For all suboptimal arms $i$, let
+        \begin{equation*}
+            H_i = \left\{ \forall t \in \{1, \ldots, n\}, \mu_1 < \hat{\mu}_{1,t}+\sqrt{\frac{2 \log(1/\delta)}{t}} \right\} 
+            \cap \left\{ \forall t \in \{1, \ldots, n\}, \mu_i > \hat{\mu}_{i,t}-\sqrt{\frac{2 \log(1/\delta)}{t}} \right\}.
+        \end{equation*}
+        Then the complement event $H_i^c$ is
+        \begin{equation*}
+            H_i^c = \left\{ \exists t \in \{1, \ldots, n\} : \mu_1 \geq \hat{\mu}_{1,t}+\sqrt{\frac{2 \log(1/\delta)}{t}} \right\} \cup \left\{ \exists t \in \{1, \ldots, n\} : \mu_i \leq \hat{\mu}_{i,t}-\sqrt{\frac{2 \log(1/\delta)}{t}} \right\}.
+        \end{equation*}
+        That is
+        \begin{equation*}
+            \mathbb{P}(H_i^c) \leq \sum_{t=1}^n \mathbb{P}\left( \mu_1 \geq \hat{\mu}_{1,t}+\sqrt{\frac{2 \log(1/\delta)}{t}} \right) + \sum_{t=1}^n \mathbb{P}\left( \mu_i \leq \hat{\mu}_{i,t}-\sqrt{\frac{2 \log(1/\delta)}{t}} \right).
+        \end{equation*}
+        Cor 5.5 follows that
+        \begin{equation*}
+            \mathbb{P}(H_i^c) \leq 2\sum_{t=1}^n \exp\left(-\frac{2 \log(1/\delta)}{t} \cdot \frac{t}{2}\right) = 2\sum_{t=1}^n \delta = 2 n \delta.
+        \end{equation*}
+        For the latest phase $l$ where arm $i$ is chosen, let $m:= T_i(t_l -1)$. Upon the event $H_i$, letting $m \geq u_i$ implies that
+        \begin{equation*}
+            \text{UCB}_i(t_l -1, \delta) = \hat{\mu}_{i,m} + \sqrt{\frac{2 \log(1/\delta)}{m}} < \mu_i + \sqrt{\frac{8 \log(1/\delta)}{m}} < \mu_i + \Delta_i = \mu_1 < \text{UCB}_1(t_l -1, \delta)
+        \end{equation*}
+        where $u_i = \lfloor \frac{8 \log(1/\delta)}{\Delta_i^2} \rfloor + 1$.
+        
+        On the other hand, if $m < u_i$, then $T_i(n) \leq 2m < 2 u_i$.
+        Therefore
+        \begin{align*}
+            \mathbb{E}[T_i(n)] &\leq 2 u_i + n\mathbb{P}(H_i^c) \\
+            &= 2u_i + 2n^2 \delta.
+        \end{align*}
+        Choosing $\delta = n^{-2}$ follows that $u_i \leq \frac{16 \log(n)}{\Delta_i^2} + 1$, and hence
+        \begin{equation*}
+            \mathbb{E}[T_i(n)] \leq 2 \left( \frac{16 \log(n)}{\Delta_i^2} + 1 \right) + 2 = \frac{32 \log(n)}{\Delta_i^2} + 4.
+        \end{equation*}
+        The regret is bounded by
+        \begin{align*}
+            R(n) &= \sum_{i: \Delta_i > 0} \Delta_i \mathbb{E}[T_i(n)] \\
+            &\leq \sum_{i: \Delta_i > 0} \Delta_i \left( \frac{32 \log(n)}{\Delta_i^2} + 4 \right) \\
+            &= 4\sum_{i=1}^{k}\Delta_i + 32 \sum_{i: \Delta_i > 0} \frac{\log(n)}{\Delta_i}.
+        \end{align*}
+        \item[(b)] Slightly larger than UCB, they are differ by scalar factor.
+        \item[(c)] \begin{equation*}
+        R(n) \lesssim 4\sum_{i=1}^{k}\Delta_i + 16 \alpha \sum_{i: \Delta_i > 0} \frac{\log(n)}{\Delta_i}.
+        \end{equation*}
+        \item[(d)] 
     \end{itemize}
 \end{solution*}
 %-----------------------------------------
