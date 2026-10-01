@@ -1,6 +1,7 @@
 \documentclass[10pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath, amsthm}
+\usepackage{verbatim}
 \usepackage{amssymb}
 \usepackage{enumitem}
 \usepackage{mathtools}
@@ -533,8 +534,83 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \end{align*}
 \end{proof}
 
-\begin{exercise*}{4.11(a)}[Retirement policy]
-    \begin{proof} 
+\begin{exercise*}{4.10}
+    Suppose $\nu$ is a finite-armed stochastic bandit and $\pi$ is a polict such that
+    \begin{equation*}
+        \lim_{n \to \infty} \frac{R_n(\pi, \nu)}{n} = 0.
+    \end{equation*}
+    Let $T^*(n) = \sum_{t=1}^n \mathbbm{1}\{\mu_{A_t} = \mu^*\}$ be the number of times an optimal arm is chosen.
+    Prove or diprove following statement:
+    \begin{itemize}
+        \item[(a)] $\lim_{n \rightarrow \infty} \mathbb{E}[T^* (n)]/n = 1$.
+        \item[(b)] $\lim_{n \rightarrow \infty} \mathbb{P}(\Delta_{A_t} > 0) = 0$.
+    \end{itemize}
+\end{exercise*}
+
+\begin{solution*}{}
+    \begin{itemize}
+        \item[(a)] True, the following are the proof;
+        \begin{proof}
+            If every arm is optimal, then $\lim_{n \rightarrow \infty} \frac{\mathbb{E}[T^*(n)]}{n} = \lim_{n \rightarrow \infty} \frac{n}{n} = 1$.
+            Suppose not. That is, 
+            \begin{equation*}
+                \exists \hspace{0.2em} a_0 \in \argmin_{a \in \{b \in \mathcal{A} : \mu_b < \mu^* \}} \{\mu^* - \mu_a\}.
+            \end{equation*} 
+            Letting $c = \mu^* - \mu_{a_0}$ follows that $ \mathbb{E}[(\mu^* - \mu_{A_t})] \geq c \cdot \mathbb{P}[\mu^* \neq \mu_{A_t}]$.
+            Hence 
+            \begin{align*}
+                \frac{R_n}{n} &= \sum_{t=1}^n \frac{\mathbb{E}[\mu^* - \mu_{A_t}]}{n} \\
+                &\geq c \frac{\sum_{t=1}^n \mathbb{P}[\mu^* \neq \mu_{A_t}]}{n}.
+            \end{align*}
+            \begin{equation*}
+                \therefore \lim_{n \rightarrow \infty}\frac{\sum_{t=1}^n \mathbb{P}[\mu^* \neq \mu_{A_t}]}{n} = 0.
+            \end{equation*}
+            Hence $^\forall n \in \mathbb{N}$,
+            \begin{align*}
+                \frac{\mathbb{E}[T^* (n)]}{n} &= \sum_{t=1}^n \frac{\mathbb{E}[\mathbbm{1}_{\mu_{A_t} = \mu^*}]}{n} \\
+                &= \frac{\sum_{t=1}^{n}\mathbb{P}[\mu_{A_t} = \mu^*]}{n} \\
+                &= 1 - \frac{\sum_{t=1}^{n}\mathbb{P}[\mu_{A_t} \neq \mu^*]}{n}.
+            \end{align*}
+            \begin{equation*}
+                \lim_{n \rightarrow \infty} \frac{\mathbb{E}[T^* (n)]}{n} = 1 - \lim_{n \rightarrow \infty} \frac{\sum_{t=1}^{n}\mathbb{P}[\mu_{A_t} \neq \mu^*]}{n} = 1.
+            \end{equation*}
+        \end{proof}
+        \item[(b)] False, the following is a counterexample;
+        
+        Consider $\mathcal{A} = \{a_0, a_1\}$ with $\mu^* = \mu_{a_0}$ and $\mu^* - \mu_{a_1} = \Delta_{a_1} > 0$.
+        Let the policy $\pi$ choose $a_1$ at $2^k$ rounds for $k \in \mathbb{N}$.
+        Then 
+        \begin{align*}
+            \lim_{n \rightarrow \infty} \frac{R_n (\pi)}{n} &= \lim_{n \rightarrow \infty}\frac{\sum_{t=1}^{n} \mathbb{E}[\mu^* - \mu_{A_t}]}{n} \\
+            &\leq \lim_{n \rightarrow \infty} \frac{\sum_{t=1}^{\lfloor \log_2 n + 100 \rfloor} \Delta_{a_1}}{n} \\
+            &= \lim_{n \rightarrow \infty} \frac{\Delta_{a_1} \lfloor \log_2 n + 100 \rfloor}{n} \\
+            &= 0.
+        \end{align*}
+        But $\lim_{n \rightarrow \infty} \mathbb{P}[\Delta_{A_{2^k}} > 0] = 1$ for $k \in \mathbb{N}$, which disproves (b).
+    \end{itemize}
+\end{solution*}
+
+\begin{exercise*}{4.11}[Retirement policy]
+    Let $\mathcal{M}_1$ be a set of distributions on $(\mathbb{R}, \mathcal{B}(\mathbb{R}))$, with finite means and 
+    $\mathcal{M}_2 = \{ \delta_{\mu_2} \}$ be a singleton set containing the Dirac measure at $\mu_2$.
+    Construct the set of bandits $\mathcal{E} = \mathcal{M}_1 \times \mathcal{M}_2$. 
+    Here a policy $\pi = (\pi_t)_{t \in \mathbb{N}}$ is called a retirement policy if $a_t = 2$, then
+    \begin{equation*}
+        \pi_{t+1}(2 \mid a_1, x_1, \ldots, a_t, x_t) = 1, \hspace{1.3em} ^\forall (a_s)_{s=1}^{t-1} \text{ and } (x_s)_{s=1}^{t}.
+    \end{equation*}
+    \begin{itemize}
+        \item[(a)] Let $n$ be fixed and $\pi = (\pi_t)_{t=1}^n$ be any policy.
+        Prove there exists a retirement policy $\pi' = (\pi'_t)_{t=1}^n$ such that for all $\nu \in \mathcal{E}$,
+        \begin{equation*}
+            R_n(\pi', \nu) \leq R_n(\pi, \nu)
+        \end{equation*}
+        \item[(b)] Let $\mathcal{M}_1 = \{ \mathcal{B}(\mu_1):\mu_1 \in [0,1] \}$ and suppose that $\pi = (\pi_t)_{t=1}^\infty$ is a retirement policy.
+        Prove there exists a bandit $\nu \in \mathcal{E}$ such that
+        \begin{equation*}
+            \limsup_{n \rightarrow \infty} \frac{R_n(\pi, \nu)}{n} > 0.
+        \end{equation*}
+    \end{itemize}
+    \begin{proof}{(a)}
         Let 
         \begin{equation*}
             \mathcal H_j := (\{1,2\}\times\mathbb R)^j, \qquad j\in\{0,\ldots,n\},
@@ -648,6 +724,61 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
         R_n(\pi',\nu)\leq R_n(\pi,\nu) 
         \end{equation*}
         for every $\nu\in\mathcal E$. 
+
+        (b)
+        If $\mu_2 \geq 1 \text{ or } \mu_2 \leq 0$, then (b) is false(Consider trivial policy, choosing optinal arm all the time).
+        Let's suppose $\mu_2 \in (0,1)$.
+        Then 
+        \begin{equation*}
+            \exists \hspace{0.2em} p,q \in (0,1) \text{ such that } 0 < p < \mu_2 < q < 1.
+        \end{equation*}
+        Define $\nu_p = (\mathcal{B}(p), \delta_{\mu_2})$, $\nu_q = (\mathcal{B}(q), \delta_{\mu_2})$ and $\tau = \inf\{t \in \mathbb{N} : A_t = 2\}$, also let a retirement policy $\pi$ be given.
+        Then $T_1 (n) = \min\{\tau - 1, n\}$, and $T_2(n) = n - T_1(n)$.
+        If
+        \begin{equation*}
+            \limsup_{n \to \infty} \frac{R_n (\pi, \nu_p)}{n} > 0,
+        \end{equation*}
+        then the conclusion follows.
+        Suppose 
+        \begin{equation*}
+            \limsup_{n \to \infty} \frac{R_n (\pi, \nu_p)}{n} = 0.
+        \end{equation*}
+        Then 
+        \begin{equation*}
+            \limsup_{n \to \infty} \frac{(\mu_2 - p)\mathbb{E}_{\nu_p, \pi}[T_1(n)]}{n} = 0.
+        \end{equation*}
+        But $T_1(n)/n = \min\{\tau - 1, n\}/n \to \mathbbm{1}_{\{\tau = \infty \}}$ almost surely.
+        Since $0 \leq T_1(n)/n \leq 1$, by the dominated convergence theorem,
+        \begin{equation*}
+            \lim_{n \rightarrow \infty} \frac{\mathbb{E}_{\nu_p, \pi}[T_1(n)]}{n} = \mathbb{P}_{\nu_p, \pi}[\tau = \infty] = 0.
+        \end{equation*}
+        Therefore, 
+        \begin{align*}
+            &\mathbb{P}_{\nu_q, \pi}[\tau = \infty] = 1 \\
+            &\implies \mathbb{P}_{\nu_q, \pi}\left[\bigcup_{m=1}^\infty \{\tau \leq m \}\right] = 1 \\
+            &\implies \exists \hspace{0.2em} m \in \mathbb{N} \text{ such that } \mathbb{P}_{\nu_q, \pi}[\tau \leq m] > 0.
+        \end{align*}
+        Here $\mathbb{P}_{\nu_p} << \mathbb{P}_{\nu_q}$ since $^\forall y = (y_1, y_2, \ldots) \in \{0,1\}^m$,
+        \begin{align*}
+            &\mathbb{P}_{\nu_p}[Y_1 = y_1, \ldots, Y_m = y_m] = p^{\sum_{i=1}^m y_i} (1-p)^{m - \sum_{i=1}^m y_i} > 0 \\
+            &\implies \mathbb{P}_{\nu_q}[Y_1 = y_1, \ldots, Y_m = y_m] = q^{\sum_{i=1}^m y_i} (1-q)^{m - \sum_{i=1}^m y_i} > 0.
+        \end{align*}
+        Hence if $\mathbb{P}_{\nu_q}[\tau \leq m] > 0$, then $\mathbb{P}_{\nu_p}[\tau \leq m] > 0$.
+        Now let $c = \mathbb{P}_{\nu_q}[\tau \leq m] > 0$.
+        Then we have 
+        \begin{equation*}
+            \Delta_2 (\nu_q) = q - \mu_2 > 0, \hspace{0.5em} \text{ and } \hspace{0.5em} T_2(n) \geq (n-m+1)\mathbbm{1}_{\{\tau \leq m\}}.
+        \end{equation*}
+        Therefore
+        \begin{align*}
+            \limsup_{n \rightarrow \infty} \frac{R_n(\pi, \nu_q)}{n} 
+            &\geq \liminf_{n \rightarrow \infty} \frac{R_n(\pi, \nu_q)}{n} \\
+            &\geq \liminf_{n \rightarrow \infty} (q-\mu_2)\frac{\mathbb{E}_{\nu_q,\pi}[T_2(n)]}{n} \\
+            &\geq \liminf_{n \rightarrow \infty} (q-\mu_2)\frac{\mathbb{E}_{\nu_q,\pi}[(n-m+1)\mathbbm{1}_{\{\tau \leq m\}}]}{n} \\
+            &= (q-\mu_2)(1 - \frac{m-1}{n})\mathbb{P}_{\nu_q,\pi}[\tau \leq m] \\
+            &= (q-\mu_2)c \\
+            &> 0.
+        \end{align*}
     \end{proof}
 \end{exercise*}
 %------------------------------------------------------------
@@ -803,6 +934,18 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
     \end{equation*}
     by Theorem 5.3.
 \end{proof}
+
+\begin{exercise*}{5.6}
+
+\end{exercise*}
+
+\begin{exercise*}{5.9}
+
+\end{exercise*}
+
+\begin{exercise*}{5.10}
+
+\end{exercise*}
 %-----------------------------------------
 
 \subsection{The Explore-Then-Commit Algorithm}
@@ -837,9 +980,18 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
         R_n \leq m \sum_{i=1}^{k} \Delta_i + (n-mk)\sum_{i=1}^{k} \Delta_i \exp\left(-\frac{m \Delta_i^2}{4}\right)
     \end{equation*}
 \end{theorem*}
-\begin{proof}
 
+\begin{proof}
+    Fill.
 \end{proof}
+
+\begin{exercise*}{6.6}
+
+\end{exercise*}
+
+\begin{exercise*}{6.8}
+
+\end{exercise*}
 %-----------------------------------------
 
 \subsection{The Upper Confidence Bound Algorithm}
@@ -1110,15 +1262,19 @@ Define
             &= 4\sum_{i=1}^{k}\Delta_i + 32 \sum_{i: \Delta_i > 0} \frac{\log(n)}{\Delta_i}.
         \end{align*}
         \item[(b)] Slightly larger than UCB, they are differ by scalar factor.
-        \item[(c)] 
+        \item[(c)] $T_i(n) \leq \ceil{\alpha m}$,
         \begin{equation*}
         R(n) \lesssim 4\sum_{i=1}^{k}\Delta_i + 16 \alpha \sum_{i: \Delta_i > 0} \frac{\log(n)}{\Delta_i}.
         \end{equation*}
-        \item[(d)] Refer "./Implementations"
+        \item[(d)] Refer "./Implementations".
     \end{itemize}
 \end{solution*}
+
 %-----------------------------------------
 
+\subsection{The Upper Confidence Bound Algorithm: Asymptotic Optimality}
+
+%-----------------------------------------
 \begin{theorem*}{}[Cramér]
     Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
     Define $\mu_n$ to be the law of $S_n$.
