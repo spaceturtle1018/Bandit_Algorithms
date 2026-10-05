@@ -1274,6 +1274,27 @@ Define
 
 \subsection{The Upper Confidence Bound Algorithm: Asymptotic Optimality}
 
+\begin{algorithm*}
+    \caption{Asymptotically optimal UCB}
+    \textbf{Input} k
+
+    Choose each arm once
+
+    Subsequently choose
+    \begin{equation*}
+        A_t = \argmax_i \left(\hat{\mu}_i (t-1) + \sqrt{\frac{2 \log f(t)}{T_i(t-1)}}\right)
+    \end{equation*}
+    where $f(t) = 1 + t \log^2(t)$.
+\end{algorithm*}
+\begin{exercise*}{8.2}
+    Consider the one-armed bandit problem: $\mathcal{E} = \{ \mathcal{N}(\mu_1, 1): \mu_1 \in \mathbb{R} \} \times \{ \mathcal{N}(0,1) \}$.
+    Suppose that $\nu = (P_1, P_2) \in \mathcal{E}$, and $P_1$ has mean $\mu_1 = 1$.
+    Evaluate
+    \begin{equation*}
+        \limsup_{n \to \infty} \frac{R_n(\pi, \nu)}{\log n}
+    \end{equation*}
+    where $\pi$ is the policy of Algorithm 6.
+\end{exercise*}
 %-----------------------------------------
 \begin{theorem*}{}[Cramér]
     Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
