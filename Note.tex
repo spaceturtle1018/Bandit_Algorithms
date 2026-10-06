@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{enumitem}
 \usepackage{mathtools}
+\usepackage{float}
 \usepackage{bbm}
 
 
@@ -958,7 +959,7 @@ Formally,
 \end{equation*}
 where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times arm $i$ has been played up to round $t$.
 
-\begin{algorithm}
+\begin{algorithm}[H]
     \caption{ETC Algorithm}
 
     \KwIn{m}
@@ -985,10 +986,30 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
     Fill.
 \end{proof}
 
-\begin{exercise*}{6.6}
-
+\begin{exercise*}{6.6}[Doubling trick]
+    Let a fixed sequence $\{n_i\}_{i=1}^{\infty}$ be given and the policy $\pi$ be given with following regret bound;
+    \begin{equation*}
+        \max_{1 \leq t \leq n} R_t(\pi(n), \nu) \leq f_n(\nu), \hspace{0.2cm} ^\forall \nu \in \mathcal{E}.
+    \end{equation*}
+    Consider the policy $\pi^*$ that runs $\pi$ until round $t = \min\{n,n_1\}$, then restarts $\pi$ until round $t = \min\{n,n_1 + n_2\}$, and so on.
+    \begin{itemize}
+        \item[(a)] Let $n > 0$ be arbitrary, $l_{\max} = \min\{l : \sum_{i=1}^l n_i \geq n\}$. 
+        Prove that $^\forall \nu \in \mathcal{E}$, 
+        \begin{equation*}
+            R_n(\pi^*, \nu) \leq \sum_{l=1}^{l_{\max}} f_{n_l} (\nu)
+        \end{equation*}
+        \item[(b)] Suppose that $f_n (\nu) \leq \sqrt{n}$.
+        Prove that if $n_l = 2^{l-1}$, then for any $\nu \in \mathcal{E}$ and horizon $n$,
+        \begin{equation*}
+            R_n (\pi^*, \nu) \leq C \sqrt{n}.
+        \end{equation*}
+        \item[(c)] Suppose that $f_n (\nu) = g(\nu)\log(n)$ for some function $g : \mathcal{E} \to [0, \infty)$.
+        What is the regret of $\pi^*$ if $n_l = 2^{l-1}$?
+    \end{itemize}
 \end{exercise*}
-
+\begin{solution*}
+    
+\end{solution*}
 \begin{exercise*}{6.8}
 
 \end{exercise*}
@@ -1274,7 +1295,7 @@ Define
 
 \subsection{The Upper Confidence Bound Algorithm: Asymptotic Optimality}
 
-\begin{algorithm*}
+\begin{algorithm*}[H]
     \caption{Asymptotically optimal UCB}
     \textbf{Input} k
 
@@ -1286,6 +1307,39 @@ Define
     \end{equation*}
     where $f(t) = 1 + t \log^2(t)$.
 \end{algorithm*}
+
+\begin{theorem*}{8.1}
+    For any 1-subgaussian bandit, regret of the asymptotically optimal UCB policy satisfies
+    \begin{equation*}
+        R_n \leq \sum_{i: \Delta_i > 0} \inf_{\epsilon \in (0, \Delta_i)} \Delta_i \left( 1 + \frac{5}{\epsilon^2} + \frac{2 \left(\log f(n) + \sqrt{\pi \log f(n)} + 1 \right)}{(\Delta_i - \epsilon)^2} \right).
+    \end{equation*}
+    Furthermore,
+    \begin{equation*}
+        \limsup_{n \to \infty} \frac{R_n}{\log n} \leq \sum_{i: \Delta_i > 0} \frac{2}{\Delta_i}.
+    \end{equation*}
+    Choosing $\epsilon = \Delta_i / 2$ inside the sum shows that
+    \begin{equation*}
+        R_n \leq \sum_{i : \Delta_i > 0} \left( \Delta_i + \frac{1}{\Delta_i} \left(8 \log f(n) + 8 \sqrt{\pi \log f(n)} + 28 \right) \right).
+    \end{equation*}
+    That is, $\exists \hspace{0.2em} C > 0$ such that
+    \begin{equation*}
+        R_n \leq \sum_{i : \Delta_i > 0} C \left( \Delta_i + \frac{\log n}{\Delta_i} \right).
+    \end{equation*}
+\end{theorem*}
+
+\begin{lemma*}{8.2}
+    Let $X_1, \ldots, X_n$ be independent 1-subgaussian random variables, $\hat{\mu}_t = \frac{1}{t} \sum_{i=1}^t X_i, \epsilon >0, a> 0$.
+    Suppose that
+    \begin{equation*}
+        \kappa = \sum_{t=1}^n \mathbbm{1}_\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \}, \hspace{0.2cm} \kappa' = u + \sum_{t=\ceil{u}}^n \mathbbm{1}_\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \}
+    \end{equation*}
+    where $u = 2a\epsilon^{-2}$.
+    Then
+    \begin{equation*}
+        \mathbb{E}[\kappa] \leq \mathbb{E}[\kappa'] \leq 1 + \frac{2}{\epsilon^2}(a + \sqrt{\pi a} + 1).
+    \end{equation*}
+\end{lemma*}
+
 \begin{exercise*}{8.2}
     Consider the one-armed bandit problem: $\mathcal{E} = \{ \mathcal{N}(\mu_1, 1): \mu_1 \in \mathbb{R} \} \times \{ \mathcal{N}(0,1) \}$.
     Suppose that $\nu = (P_1, P_2) \in \mathcal{E}$, and $P_1$ has mean $\mu_1 = 1$.
@@ -1293,9 +1347,30 @@ Define
     \begin{equation*}
         \limsup_{n \to \infty} \frac{R_n(\pi, \nu)}{\log n}
     \end{equation*}
-    where $\pi$ is the policy of Algorithm 6.
+    where $\pi$ is the policy of asymptotically optimal UCB.
 \end{exercise*}
+
+\begin{exercise*}{8.3}
+    Consider the setting of Exercise 8.2 and define a policy by
+    \begin{equation*}
+        A_t = \begin{cases}
+            1 & \text{ if } \hat{\mu_1}(t-1) + \sqrt{\frac{2 \log f(t)}{T_1(t-1)}} \geq 0,\\
+            2 & \text{ otherwise.}
+        \end{cases}
+    \end{equation*}
+    Suppose that $\nu = (P_1, P_2)$ where $P_1 = \mathcal{N}(\mu_1 , 1)$ and $P_2 = \mathcal{N}(0,1)$.
+    Prove that for the modified policy,
+    \begin{equation*}
+        \limsup_{n \to \infty} \frac{R_n(\pi, \nu)}{\log n} \leq 
+        \begin{cases}
+            0 & \text{ if } \mu_1 \geq 0,\\
+            -\frac{2}{\mu_1} & \text{ if } \mu_1 < 0.
+        \end{cases}
+    \end{equation*}
+\end{exercise*}
+
 %-----------------------------------------
+
 \begin{theorem*}{}[Cramér]
     Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
     Define $\mu_n$ to be the law of $S_n$.
