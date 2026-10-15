@@ -1007,12 +1007,179 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
         What is the regret of $\pi^*$ if $n_l = 2^{l-1}$?
     \end{itemize}
 \end{exercise*}
-\begin{solution*}
-    
+\begin{solution*}{6.6}
+    \leavevmode
+    \begin{itemize}
+        \item[(a)] 
+        \begin{proof}
+            Let $N_0 = 0$, $N_l = \sum_{i=1}^l n_i$. Then $N_{l_{\max}} < n \leq N_{l_{\max}} + n_{l_{\max}}$.
+            Also define last period $m_{l_{\max}} = n - N_{l_{\max}-1}$.
+            Then
+            \begin{equation*}
+                R_n(\pi^*, \nu) = \sum_{l=1}^{l_{\max}-1} R_{n_l}(\pi(n_l), \nu) + R_{n_{l_{\max}}}(\pi(m_{l_{\max}}), \nu) \leq \sum_{l=1}^{l_{\max}-1} f_{n_l} (\nu) + f_{n_{l_{\max}}} (\nu) \leq \sum_{l=1}^{l_{\max}} f_{n_l} (\nu).
+            \end{equation*}
+        \end{proof}
+        \item[(b)]
+        \begin{proof}
+            Using (a),
+            \begin{equation*}
+                R_n (\pi^*, \nu) \leq \sum_{l=1}^{l_{\max}} f_{n_l} (\nu) \leq \sum_{l=1}^{l_{\max}}\sqrt{n_l} \leq \sum_{l=1}^{l_{\max}}{2^{\frac{l-1}{2}}}.
+            \end{equation*}
+            Also, $n > \sum_{l=1}^{l_{\max}-1} n_l = \sum_{l=1}^{l_{\max}-1} 2^{l-1} = 2^{l_{\max}-1} - 1$, so $n \geq 2^{l_{\max}-1} = n_{l_{\max}}$. Therefore,
+            \begin{equation*}
+                \sum_{l=1}^{l_{\max}} 2^{\frac{l-1}{2}} \leq \sum_{j=0}^{l_{\max}} 2^{\frac{j}{2}} = \sum_{j=0}^{l_{\max}} 2^{\frac{l_{\max}-1}{2}} \cdot 2^{-\frac{l_{\max}-1-j}{2}}
+                = \sqrt{2^{l_{\max}-1}} \sum_{j=0}^{l_{\max}} \sqrt{2}^{1-j}
+                \leq \sqrt{n} \sum_{j=0}^{\infty} \sqrt{2}^{1-j}.
+            \end{equation*}
+        \end{proof}
+        \item[(c)]
+        \begin{proof}
+            Using (a),
+            \begin{equation*}
+                R_n (\pi^*, \nu) \leq \sum_{l=1}^{l_{\max}} g(\nu) \log(2^{l-1}) 
+                = g(\nu)\log(2) \sum_{l=1}^{l_{\max}} (l-1) 
+                = g(\nu)\log(2) \frac{(l_{\max}-1)l_{\max}}{2}.
+            \end{equation*}
+            Here $\sum_{l=1}^{l_{\max}} 2^{l-1} \geq n$, which implies $l_{\max} \geq \log_2(n+1)$. That is, $l_{\max} = \ceil{\log_2(n+1)}$. Therefore,
+            \begin{equation*}
+                R_n (\pi^*, \nu) \leq g(\nu)\log(2) \frac{(\ceil{\log_2(n+1)}-1)\ceil{\log_2(n+1)}}{2} = Cg(\nu)\mathcal{O}((\log_2(n))^2).
+            \end{equation*}
+        \end{proof}
+    \end{itemize}
 \end{solution*}
 \begin{exercise*}{6.8}
+    Assume that arm 1 is an optimal arm and the horizon n is known. Consider following algorithm:
 
+    \begin{algorithm*}[H]
+        \caption{Phased elimination for finite-armed bandits}
+        \textbf{Input: } $k$ and sequence $(m_l)_l$
+
+        $A_1 = \{1, 2, \ldots, k\}$
+
+        \For{$l=1,2,3,\ldots$}{
+            Choose each arm $i \in A_l$ exactly $m_l$ times
+
+            Let $\hat{\mu}_{i,l}$ be the average reward for arm $i$ from this phase only
+
+            Update active set:
+            \begin{equation*}
+                A_{l+1} = \left\{ i: \hat{\mu}_{i,l}+2^{-l}\geq \max_{j \in A_l}\hat{\mu}_{j,l}\right\}
+            \end{equation*}
+        }
+        \textbf{end for}
+    \end{algorithm*}
+    \begin{itemize}
+        \item[(a)] Show that for any $\ell \geq 1$,
+        \begin{equation*}
+            \mathbb{P}(1 \notin A_{\ell+1},\, 1 \in A_\ell)
+            \leq k \exp\left(-\frac{m_\ell 2^{-2\ell}}{4}\right).
+        \end{equation*}
+        \item[(b)] Show that if $i \in [k]$ and $\ell \geq 1$ are such that
+        $\Delta_i \geq 2^{-\ell}$, then
+        \begin{equation*}
+            \mathbb{P}(i \in A_{\ell+1},\, 1 \in A_\ell,\, i \in A_\ell)
+            \leq \exp\left(
+                -\frac{m_\ell(\Delta_i - 2^{-\ell})^2}{4}
+            \right).
+        \end{equation*}
+        \item[(c)] Let $\ell_i = \min\{\ell \geq 1 : 2^{-\ell} \leq \Delta_i/2\}$.
+        Choose $m_\ell$ in such a way that
+        $\mathbb{P}(\exists\, \ell : 1 \notin A_\ell) \leq 1/n$ and $\mathbb{P}(i \in A_{\ell_i+1}) \leq 1/n$.
+        \item[(d)] Show that your algorithm has regret at most
+        \begin{equation*}
+            R_n \leq C \sum_{i:\Delta_i>0}
+            \left(
+                \Delta_i + \frac{1}{\Delta_i}\log(n)
+            \right),
+        \end{equation*}
+        where $C > 0$ is a carefully chosen universal constant.
+        \item[(e)] Modify your choice of $m_\ell$ and show that the regret of the resulting algorithm satisfies
+        \begin{equation*}
+            R_n \leq C \sum_{i:\Delta_i>0}
+            \left(
+                \Delta_i
+                + \frac{1}{\Delta_i}\log\max\{e,n\Delta_i^2\}
+            \right).
+        \end{equation*}
+        \item[(f)] Show that with an appropriate universal constant $C' > 0$, the regret satisfies
+        \begin{equation*}
+            R_n \leq \sum_i \Delta_i + C'\sqrt{nk\log(k)}.
+        \end{equation*}
+    \end{itemize}
 \end{exercise*}
+\begin{solution*}{}
+    Let $i$'th arm gets reward sample $X_{i,1}, \ldots, X_{i,m_l}$.
+    \begin{itemize}
+        \item[(a)] 
+        \begin{proof}
+            Let $l \in \{1, \ldots, n-1\}$.
+            Then
+            \begin{align*}
+                \mathbb{P}[1 \notin A_{l+1}, 1 \in A_l] &= \mathbb{P} [1 \in A_l, \exists \hspace{0.2em} i \in A_l \text{ s.t. } \hat{\mu}_{1,l} + 2^{-l} < \hat{\mu}_{i,l}] \\
+                &\leq \sum_{i=1}^k \mathbb{P}[\hat{\mu}_{1,l}+ 2^{-l} < \hat{\mu}_{i,l}].
+            \end{align*}
+            Here $\hat{\mu}_{i,l} = \frac{1}{m_l}\sum_{j=1}^{m_l}X_{i,j}$. It follows that $^\forall \lambda \in \mathbb{R}$,
+            \begin{align*}
+                \mathbb{E}[e^{\lambda (\hat{\mu}_{i,l}-\mu_i)}] &= \mathbb{E}[e^{\frac{\lambda}{m_l}\sum_{j=1}^{m_l}(X_{i,j}-\mu_i)}] \\
+                &= \prod_{j=1}^{m_l}\mathbb{E}[e^{\frac{\lambda}{m_l}(X_{i,j}-\mu_i)}] \hspace{0.5cm} (\text{independent}) \\
+                &\leq \prod_{j=1}^{m_l} \exp\left(\frac{1}{2}\left(\frac{\lambda}{m_l}\right)^2\right) \hspace{0.5cm} (\text{1-subgaussian}) \\
+                &= \exp \left(\frac{\lambda^2}{2m_l}\right)
+            \end{align*}
+            Therefore $\hat{\mu}_{i,l}-\mu_i$ is $\frac{1}{m_l}$-subgaussian.
+            Hence $(\hat{\mu}_{i,l} - \hat{\mu}_{1,l}) - (\mu_i -\mu_1)$ is $\frac{2}{m_l}$-subgaussian.
+            It follows that
+            \begin{align*}
+                \mathbb{P}[\hat{\mu_{1,l}}+2^{-l}<\hat{\mu}_{i,l}] &\leq \mathbb{P}[(\hat{\mu_{i,l}} - \hat{\mu_{1,l}})-(\mu_i - \mu_1) > 2^{-l}] \hspace{0.5cm} (\because \mu_i - \mu_1 < 0) \\
+                &\leq \exp \left( - \frac{2^{-2l}}{2 \cdot \frac{2}{m_l}} \right) \hspace{0.5cm} \text{(Theorem 5.3)} \\
+                &= \exp \left(-\frac{m_l 2^{-2l}}{4}\right).
+            \end{align*}
+            Therefore
+            \begin{align*}
+                \mathbb{P}[1 \notin A_{l+1}, 1 \in A_l] &\leq \sum_{i=1}^k \exp \left( - \frac{m_l 2^{-2l}}{4} \right) \\
+                &= k \exp \left( - \frac{m_l 2^{-2l}}{4} \right).
+            \end{align*}
+        \end{proof}
+        \item[(b)] 
+        \begin{proof}
+            Let $i \in \{1, \ldots, k\}$ and $\ell \geq 1$ be $\Delta_i \geq 2^{-l}$.
+            Then 
+            \begin{align*}
+                \mathbb{P}[i \in A_{l+1}, 1 \in A_l, i \in A_l] &\leq \mathbb{P}[\hat{\mu}_{i,l}+2^{-l} \geq \hat{\mu}_{1,l}] \\
+                &= \mathbb{P}[(\hat{\mu}_{1,l} - \hat{\mu}_{1,l}) - (\mu_1 - \mu_i) \leq 2^{-l} - \Delta_i] \\
+                &= \mathbb{P}[-(\hat{\mu}_{1,l} - \hat{\mu}_{i,l})+(\mu_1 - \mu_i) \geq \Delta_i - 2^{-l}].
+            \end{align*}
+            By the similiar argument with (a), $ - \left( \left( \hat{\mu}_{1,l} - \hat{\mu}_{i,l} \right) + \left( \mu_1 - \mu_i \right) \right) $ is $\frac{2}{m_l}$-subgaussian.
+            \begin{align*}
+                \therefore \mathbb{P}[i \in A_{l+1}, 1 \in A_l, i \in A_l] &\leq \exp \left( - \frac{(\Delta_i - 2^{-l})^2}{2 \cdot \frac{2}{m_l}} \right) \\
+                &= \exp \left( - \frac{m_l (\Delta_i - 2^{-l})^2}{4} \right).
+            \end{align*}
+        \end{proof}
+        \item[(c)]
+        \begin{proof}
+            Fix $i \in \{1, \ldots, k \}$. Then
+            \begin{equation*}
+                \mathbb{P}\left[\exists \ell_0 \text{ s.t. } 1 \notin A_{\ell_0}\right] 
+                = \mathbb{P} \left[ \bigcup_{l \geq 1} \left\{ 1\in A_l, 1 \notin A_{l+1} \right\} \right]
+                \leq \sum_{\ell \geq 1} k \exp \left( - \frac{m_l 2^{-2l}}{4} \right)
+            \end{equation*}
+            by (a).
+            Choose $m_l = 2^{2l+2} \log (2^{l+1} \cdot nk)$. Then
+            \begin{equation*}
+                \sum_{\ell \geq 1} k \exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right) = \sum_{\ell \geq 1} k \cdot 2^{-l-1} \cdot \frac{1}{nk} = \frac{1}{2n}.
+            \end{equation*}
+            Also, $\left\{ i \in A_{i+1}\right\} \subset \left\{i \in A_{\ell_i + 1}, 1 \in A_{\ell_i}, i \in A_{\ell_i} \right\} \cup \left\{1 \notin A_{\ell_i} \right\}$ implies
+            \begin{align*}
+                \mathbb{P} \left[ i \in A_{i+1} \right] &\leq \mathbb{P} \left[ i \in A_{\ell_i + 1}, 1 \in A_{\ell_i}, i \in A_{\ell_i} \right] + \mathbb{P} \left[ 1 \notin A_{\ell_i} \right] \\
+                &\leq \exp \left( - \frac{m_{\ell_i}\left(\Delta_i - 2^{-2\ell_i}\right)^2}{4}\right) + \mathbb{P}\left[ \exists l \text{ s.t. } 1 \notin A_\ell \right] \\
+                &\leq \exp \left( - \frac{m_{\ell_i}\cdot \frac{\Delta_i ^2}{4}}{4} \right) + \mathbb{P}\left[ \exists \ell \text{ s.t. } 1 \notin A_\ell \right] \\
+                &\leq \exp \left( - \frac{2^{2 \ell_i} \cdot \Delta_i ^2 \cdot \log(2^{\ell_i +1} \cdot nk)}{4} \right) + \frac{1}{2n} \\
+                &\leq \exp \left( - \log(2^{\ell_i +1} \cdot nk) \right) + \frac{1}{2n} \\
+                &\leq 2^{-\ell_i - 1} \cdot \frac{1}{nk} + \frac{1}{2n} \\
+                &\leq \frac{1}{n}
+            \end{align*}
+        \end{proof}
+    \end{itemize}
+\end{solution*}
 %-----------------------------------------
 
 \subsection{The Upper Confidence Bound Algorithm}
