@@ -1159,25 +1159,63 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
             Fix $i \in \{1, \ldots, k \}$. Then
             \begin{equation*}
                 \mathbb{P}\left[\exists \ell_0 \text{ s.t. } 1 \notin A_{\ell_0}\right] 
-                = \mathbb{P} \left[ \bigcup_{l \geq 1} \left\{ 1\in A_l, 1 \notin A_{l+1} \right\} \right]
-                \leq \sum_{\ell \geq 1} k \exp \left( - \frac{m_l 2^{-2l}}{4} \right)
+                = \mathbb{P} \left[ \bigcup_{\ell \geq 1} \left\{ 1\in A_\ell, 1 \notin A_{\ell+1} \right\} \right]
+                \leq \sum_{\ell \geq 1} k \exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right)
             \end{equation*}
             by (a).
-            Choose $m_l = 2^{2l+2} \log (2^{l+1} \cdot nk)$. Then
+            Choose $m_\ell = 2^{2\ell+2} \log (2^{\ell+1} \cdot nk)$. Then
             \begin{equation*}
-                \sum_{\ell \geq 1} k \exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right) = \sum_{\ell \geq 1} k \cdot 2^{-l-1} \cdot \frac{1}{nk} = \frac{1}{2n}.
+                \sum_{\ell \geq 1} k \exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right) = \sum_{\ell \geq 1} k \cdot 2^{-\ell-1} \cdot \frac{1}{nk} = \frac{1}{2n}.
             \end{equation*}
             Also, $\left\{ i \in A_{i+1}\right\} \subset \left\{i \in A_{\ell_i + 1}, 1 \in A_{\ell_i}, i \in A_{\ell_i} \right\} \cup \left\{1 \notin A_{\ell_i} \right\}$ implies
             \begin{align*}
                 \mathbb{P} \left[ i \in A_{i+1} \right] &\leq \mathbb{P} \left[ i \in A_{\ell_i + 1}, 1 \in A_{\ell_i}, i \in A_{\ell_i} \right] + \mathbb{P} \left[ 1 \notin A_{\ell_i} \right] \\
-                &\leq \exp \left( - \frac{m_{\ell_i}\left(\Delta_i - 2^{-2\ell_i}\right)^2}{4}\right) + \mathbb{P}\left[ \exists l \text{ s.t. } 1 \notin A_\ell \right] \\
+                &\leq \exp \left( - \frac{m_{\ell_i}\left(\Delta_i - 2^{-2\ell_i}\right)^2}{4}\right) + \mathbb{P}\left[ \exists \ell \text{ s.t. } 1 \notin A_\ell \right] \\
                 &\leq \exp \left( - \frac{m_{\ell_i}\cdot \frac{\Delta_i ^2}{4}}{4} \right) + \mathbb{P}\left[ \exists \ell \text{ s.t. } 1 \notin A_\ell \right] \\
                 &\leq \exp \left( - \frac{2^{2 \ell_i} \cdot \Delta_i ^2 \cdot \log(2^{\ell_i +1} \cdot nk)}{4} \right) + \frac{1}{2n} \\
                 &\leq \exp \left( - \log(2^{\ell_i +1} \cdot nk) \right) + \frac{1}{2n} \\
                 &\leq 2^{-\ell_i - 1} \cdot \frac{1}{nk} + \frac{1}{2n} \\
                 &\leq \frac{1}{n}
             \end{align*}
+            for $m_\ell = \ceil{2^{2\ell+2} \log (2^{\ell+1} \cdot nk)}$.
         \end{proof}
+        \item[(d)]
+        Suppose $\max_{i} \Delta_i \leq 1$ and $ n\geq 2 $.
+        Let
+        \begin{equation*}
+            m_\ell = \ceil{2^{2\ell +2}\log(4n^2)}  \hspace{1cm} \text{ and } \hspace{1cm} \tau_\ell = \sum_{s=1}^\ell |A_s|m_s
+        \end{equation*}
+        Also define
+        \begin{equation*}
+            G = \bigcap_{\ell : \tau_\ell \leq n} \bigcap_{i\in A_\ell \setminus \{1\}} \left( \left\{ 1 \notin A_\ell \right\} \cup \left\{ |(\hat{\mu}_{i,\ell} - \hat{\mu}_{1,\ell})-(\mu_i - \mu_1)| < 2^{-\ell} \right\}\right).
+        \end{equation*}
+        Then, by definition of $m_\ell$,
+        \begin{equation*}
+            2\exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right) \leq \frac{1}{2n^2},
+        \end{equation*}
+        Also note that subgaussian tail bound implies
+        \begin{equation*}
+            \mathbb{P}[ |(\hat{\mu}_{i,\ell} - \hat{\mu}_{1,\ell})-(\mu_i - \mu_1)| \geq 2^{-\ell} ] \leq  2\exp \left( - \frac{m_\ell 2^{-2\ell}}{4} \right).
+        \end{equation*}
+        Hence we get
+        \begin{align*}
+            \mathbb{P}[G^c] &= \mathbb{P} \left[ \bigcup_{\ell : \tau_\ell \leq n} \bigcup_{i\in A_\ell \setminus \{1\}} \left( \left\{ 1 \in A_\ell \right\} \cap \left\{ |(\hat{\mu}_{i,\ell} - \hat{\mu}_{1,\ell})-(\mu_i - \mu_1)| \geq 2^{-\ell} \right\}\right)\right] \\
+            &\leq \sum_{\ell \geq 1} \sum_{i \neq 1} \mathbb{E} \left[ \mathbbm{1}_{\{\tau_\ell \leq n\}} \mathbbm{1}_{\{1,i \in A_\ell\}} \mathbbm{1}_{\{|(\hat{\mu}_{i,\ell} - \hat{\mu}_{1,\ell})-(\mu_i - \mu_1)| \geq 2^{-\ell}\}} \right] \\
+            &\leq \frac{1}{2n^2} \sum_{\ell \geq 1} \sum_{i \neq 1} \mathbb{E} \left[ \mathbbm{1}_{\{\tau_\ell \leq n\}} \mathbbm{1}_{\{1,i \in A_\ell\}} \right] \\
+            &= \frac{1}{2n^2} \sum_{\ell \geq 1} \sum_{i \neq 1} \mathbb{E} \left[ \mathbbm{1}_{\{\tau_\ell \leq n\}} \mathbbm{1}_{\{1 \in A_\ell\}} \mathbbm{1}_{\{i \in A_\ell\}} \right] \\
+            &\leq \frac{1}{2n^2} \sum_{\ell \geq 1} \mathbb{E} \left[ \mathbbm{1}_{\{\tau_\ell \leq n\}} m_\ell |A_\ell| \right] \\
+            &\leq \frac{1}{2n^2} n = \frac{1}{2n}.
+        \end{align*}
+        If $G$ happens, arm-1 is not eliminated for all phases until $n$ and suboptimal arm arm-i is eliminated if phase $\ell_i$ is successfully completed unitl $n$ where $i \in A_{\ell_i}$.
+        Even if the phase $\ell_i$ were not successfully completed and stopped at $n$, $T_i (n) \leq \sum_{\ell}^{\ell_i} m_\ell$.
+        Hence
+        \begin{equation*}
+            T_i (n) \leq \sum_{\ell=1}^{\ell_i} m_\ell + n \mathbbm{1}_{G^c},
+        \end{equation*}
+        which implies
+        \begin{equation*}
+            \mathbb{E}[T_i (n)] \leq \sum_{\ell=1}^{\ell_i}m_\ell + \frac{1}{2}
+        \end{equation*}
     \end{itemize}
 \end{solution*}
 %-----------------------------------------
