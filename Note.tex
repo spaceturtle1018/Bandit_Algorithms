@@ -1668,14 +1668,86 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
 
 \begin{solution*}{9.3}
     Suppose $n \geq k \geq 2$.
-    Define
-    \begin{equation*}
-        b(s) = \sqrt{\frac{4}{s} \log^+ \left(\frac{n}{s}\right)}, \, \text{ and } \, U_i (s) = \hat{\mu}_{i,s} + b(s),
-    \end{equation*}
-    and an event
-    \begin{equation*}
-        G_i = \left\{ \exists s \in \{1, \ldots, n\} \text{ s.t. } U^* (s) < \mu^* - \frac{\Delta_i}{2} \right\}.
-    \end{equation*}
+    \begin{itemize}
+        \item[(a)] Define
+        \begin{equation*}
+            b(s) = \sqrt{\frac{4}{s} \log^+ \left(\frac{n}{s}\right)}, \, \text{ and } \, U_i (s) = \hat{\mu}_{i,s} + b(s),
+        \end{equation*}
+        and an event
+        \begin{equation*}
+            G_i = \left\{ \exists s \in \{1, \ldots, n\} \text{ s.t. } U^* (s) < \mu^* - \frac{\Delta_i}{2} \right\}.
+        \end{equation*}
+        Apply Lemma 9.3 with $\delta = 1/n$, $\Delta = \Delta_i /2$, $Y_j^*$ be $j$-th reward of optimal arm, and $X_j = Y_j^* - \mu^*$ implies
+        \begin{align*}
+            \mathbb{P}\left[ \exists \, s \in \{1, \ldots, n \} \, \text{ s.t. } \, \frac{1}{s} \sum_{j=1}^s X_j + b(s) + \frac{\Delta_i}{2} \leq 0 \right]
+            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \hat{\mu}_s^* + b(s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
+            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, U^* (s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
+            &= \mathbb{P}\left[G_i\right] \\
+            &\leq \frac{60}{n \Delta_i^2}.
+        \end{align*}
+        Now, for any suboptimal arm $i$,
+        \begin{align*}
+            T_i (n) &= 1 + \sum_{t=k+1}^n \mathbbm{1}_{\left\{A_t = i\right\}} \\
+            &= 1 + \sum_{t=k+1}^n \mathbbm{1}_{\left\{A_t = i, \, U_i (T_i (t-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \mathbbm{1}_{\left\{A_t = i, \, U_i (T_i (t-1))<\mu_i + \frac{\Delta_i}{2}\right\}} \\
+            &\leq 1 + \sum_{s=1}^{T_i(n)-1} \mathbbm{1}_{\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \sum_{t=k+1}^n \mathbbm{1}_{\left\{U^* (T^* (t-1)) \leq U_i (T_i (t-1)) < \mu_i + \frac{\Delta_i}{2}\right\}} \\
+            &\leq 1 + \sum_{s=1}^n \mathbbm{1}_{\left\{U_i(s) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \sum_{s=1}^n \mathbbm{1}_{\left\{U^* (s) < \mu^* - \frac{\Delta_i}{2}\right\}} \\
+            &\leq 1 + n \mathbbm{1}_{G_i} + \sum_{s=1}^n \mathbbm{1}_{\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\}}.
+        \end{align*}
+        Hence 
+        \begin{equation*}
+            \mathbb{E}\left[ T_i (n) \right] \leq 1 + n \mathbb{P} \left[G_i \right] + \sum_{s=1}^n \mathbb{P} \left[ U_i (s) \geq \mu_i + \frac{\Delta_i}{2} \right].
+        \end{equation*}
+        Here the summand is equal to $\mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{2} - b(s) \right]$, whose bound will be determined by Cor 5.5.
+        So, we shall found separating value that makes $\frac{\Delta_i}{2} - b(s) > 0$.
+        \begin{align*}
+            b(s) \leq \frac{\Delta_i}{4} &\iff s \Delta_i^2 \geq 64 \log^+ \frac{n}{s} \\
+            &\impliedby s \Delta_i^2 \geq 64 \log^+ (n \Delta_i^2) \text{ and } s \geq \frac{1}{\Delta_i^2} \\
+            &\impliedby s \geq \frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
+        \end{align*}
+        Separate $s$ by
+        \begin{equation*}
+            s \leq \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}.
+        \end{equation*}
+        Then
+        \begin{align*}
+            \mathbb{E}\left[T_i (n) \right] &\leq 1 + n \mathbb{P} \left[ G_i \right] + \ceil*{\frac{64\log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1 + \sum_{s = \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu_{i,s}} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
+            &\leq \frac{60}{\Delta_i^2} + \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
+            &\leq 1 + \frac{60 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2} + \frac{32}{\Delta_i^2} \\
+            &= 1 + \frac{92 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
+        \end{align*}
+        \begin{equation*}
+            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \left( \sum_{i=1}^n \Delta_i + \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \right)
+        \end{equation*}
+        for some $C$.
+        \item[(b)] From (a), we have $^\forall i \in \{1, \ldots, k \}$,
+        \begin{equation*}
+            \Delta_i \mathbb{E} \left[ T_i (n) \right] \leq C \left(\Delta_i + \frac{\log^+ (n \Delta_i^2)}{\Delta_i}\right)
+        \end{equation*}
+        for some $C$.
+        Let $\delta > 0$ be some small constant, which will be decided later.
+        Then
+        \begin{align*}
+            R_n &\leq \sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
+            &\leq n\delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i : \Delta_i > \delta} \frac{\log^+ (n\Delta_i^2)}{\Delta_i}.
+        \end{align*}
+        Let $\Delta_i = r\delta$ for $\Delta_i$'s with $\Delta_i > \delta$, where $r>1$.
+        Then
+        \begin{equation*}
+            \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \leq \frac{\log^+ (n\delta^2) + 2 \log r}{\delta r} \leq \frac{\log^+ (n\delta^2)}{\delta} + \frac{2}{\delta}
+        \end{equation*}
+        for $\Delta_i$'s with $\Delta_i > \delta$. Hence
+        \begin{equation*}
+            R_n \leq n\delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 2 \right).
+        \end{equation*}
+        Choose $\delta = \sqrt{\frac{k\log^+ k}{n}}$.
+        Then
+        \begin{align*}
+            R_n &\leq \sqrt{kn\log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+ (k\log^+ k ) + 2 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k +2 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn\log^+ k} + \frac{2C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
+            &\leq C \left( \sqrt{kn \log^+ k} + \sum_{i=1}^k \Delta_i \right).
+        \end{align*}
+    \end{itemize}
 \end{solution*}
 
 %-----------------------------------------
