@@ -105,8 +105,7 @@
 
 %------------------------------------------------------------
 
-\section{Bandits, Probability and Concentration}
-\subsection{Introduction}
+\section{Introduction}
 
 \begin{definition*}{}
     \leavevmode
@@ -155,7 +154,7 @@
 
 %------------------------------------------------------------
 
-\subsection{Foundations of Probability}
+\section{Foundations of Probability}
 
 \begin{definition*}{}Let an \textbf{event set} $\Omega$ be given.
     \leavevmode
@@ -245,7 +244,7 @@
 
 %------------------------------------------------------------
 
-\subsection{Stochastic Processes and Markov Chains}
+\section{Stochastic Processes and Markov Chains}
 
 \begin{definition*}{}
     Let two measurable spaces $(\mathcal{X}, \mathcal{F})$ and $(\mathcal{Y}, \mathcal{G})$ be given.
@@ -370,7 +369,7 @@
 
 %------------------------------------------------------------
 
-\subsection{Stochastic Bandits}
+\section{Stochastic Bandits}
 \begin{definition*}{}
     A \textbf{stochastic bandit} is a collection of distributions $\nu = \{P_a : a \in \mathcal{A} \}$.
 \end{definition*}
@@ -784,7 +783,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
 \end{exercise*}
 %------------------------------------------------------------
 
-\subsection{Concentration of measure}
+\section{Concentration of measure}
 
 \begin{definition*}{}
     Let $X, X_1, X_2, \ldots, X_n$ be i.i.d. random variables with real values, 
@@ -949,7 +948,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
 \end{exercise*}
 %-----------------------------------------
 
-\subsection{The Explore-Then-Commit Algorithm}
+\section{The Explore-Then-Commit Algorithm}
 
 From now on, we assume that all bandit instances are in $\mathcal{E}_{\text{SG}}^k(1)$, which means the reward distribution of all arms is 1-subgaussian.
 Let $\hat{\mu}_i(t)$ be the average reward received from arm $i$ up to round $t$.
@@ -1220,7 +1219,7 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
 \end{solution*}
 %-----------------------------------------
 
-\subsection{The Upper Confidence Bound Algorithm}
+\section{The Upper Confidence Bound Algorithm}
 
 Note that for sequence of independent 1-subgaussian random variables $(X_t)_{t=1}^n$, mean $\mu$ and the empirical mean $\hat{\mu}_n = \frac{1}{n} \sum_{t=1}^n X_t$ satisfy
 \begin{equation*}
@@ -1498,7 +1497,7 @@ Define
 
 %-----------------------------------------
 
-\subsection{The Upper Confidence Bound Algorithm: Asymptotic Optimality}
+\section{The Upper Confidence Bound Algorithm: Asymptotic Optimality}
 
 \begin{algorithm*}[H]
     \caption{Asymptotically optimal UCB}
@@ -1573,6 +1572,111 @@ Define
         \end{cases}
     \end{equation*}
 \end{exercise*}
+
+%-----------------------------------------
+
+\section{The Upper Confidence Bound Algorithm: Minimax Optimality}
+
+Here we approach to the minimax optimality with regret bound of worst-case be less than equal to $\sqrt{nk}$, by MOSS(Minimax Optimal Strategy in the Stochastic case) algorithm.
+But MOSS still requires the horizon $n$, which we will handle later.
+
+\begin{algorithm*}[H]
+    \caption{MOSS}
+    \textbf{Input} $n$ and $k$
+
+    Choose each arm once
+
+    Subsequently choose
+    \begin{equation*}
+        A_t = \argmax_{i} \hat{\mu}_i (t-1) + \sqrt{\frac{4}{T_i (t-1)} \log^{+} \left( \frac{n}{k T_i (t-1)} \right)},
+    \end{equation*}
+    \begin{center}
+        where $\log^{+} (x) = \log \max \{1, x\}$.
+    \end{center}
+\end{algorithm*}
+
+\begin{theorem*}{9.1}
+    For any 1-subgaussian bandit, the regret of MOSS algorithm satisfies
+    \begin{equation*}
+        R_n \leq 39\sqrt{kn} + \sum_{i=1}^k \Delta_i.
+    \end{equation*}
+\end{theorem*}
+
+\begin{theorem*}{9.2}
+    Let $X_1, \ldots, X_n$ be a sequence of independent $\sigma$-subgaussian random variables and
+    $S_t = \sum_{i=1}^t X_i$. Then $^\forall \, \epsilon > 0$,
+    \begin{equation*}
+        \mathbb{P}[\exists \, t \leq n \text{ s.t. } S_t \geq \epsilon] \leq \exp \left(- \frac{\epsilon^2}{2n \sigma^2} \right).
+    \end{equation*}
+    Note. Thm. 9.2 implies Cor. 5.5.
+\end{theorem*}
+
+\begin{lemma*}{9.3}
+    Let $\delta \in (0,1)$ and $X_1, \ldots$ be independent 1-subgaussian random variables, and $\hat{\mu}_t = \frac{1}{t}\sum_{i=1}^t X_i$.
+    Then $^\forall \, \Delta > 0$,
+    \begin{equation*}
+        \mathbb{P}\left[ \exists \, s \geq 1 \text{ s.t. } \hat{\mu}_s + \sqrt{\frac{4}{s} \log^+ \left( \frac{1}{s\delta} \right)} + \Delta \leq 0 \right] \leq \frac{15\delta}{\Delta^2}.
+    \end{equation*}
+\end{lemma*}
+
+\subsection{Note on minimax optimality of MOSS}
+In chapter 9, the term "minimax optimality" appears repeatedly, but it has not formally defined.
+Here we state precisely in what sense MOSS is minimax optimal.
+
+\begin{theorem*}{}
+    For  $k$, define $\mathcal{E}_{\text{SG}}^{k}(1)$ be the class of all $k$-armed $1$-subgaussian instances.
+    If suboptimal gap $\Delta_i \leq 1$ for all $i \in \{1, \ldots, k\}$,
+    then $\exists \, c, C >0 $ such that $^\forall \, k \geq 2 \text{ and } n \geq k$,
+    \begin{equation*}
+        c\sqrt{kn} \leq \inf_{\pi \in \Pi} \sup_{\nu \in \mathcal{E}_{\text{SG}}^{k}(1)} R_n(\pi, \nu) \leq \sup_{\nu \in \mathcal{E}_{\text{SG}}^{k}(1)} R_n(\pi_{k,n}^{\text{MOSS}},\nu) \leq C \sqrt{kn}
+    \end{equation*}
+    where $\Pi$ is a family of policies for $k$-armed $1$-subgaussian instances with finite horizon $n$, $\pi_{k,n}^{\text{MOSS}}$ is a MOSS algorithm for $k$-armed $1$-subgaussian instances with finite horizon $n$.
+\end{theorem*}
+The first inequality is from Theorem 15.2, and the last inequality is from Theorem 9.1.
+Uniform bound for suboptimal gap is not need to be $1$, only constant factor differs if we set arbitrarily.
+From the theorem, we may say MOSS is minimax optimal up to universal constant factors over the class of $k$-armed $1$-subgaussian instances with known horizon $n\leq k$, where the suboptimal gap is uniformly bounded.
+
+\begin{theorem*}{15.2}[p.199]
+    Let $k > 1$ and $n \geq k-1$. Then, for any policy $\pi$, $\exists \, \mu \in [0,1]^k$ such that
+    \begin{equation*}
+        R_n (\pi, \nu_\pi) \geq \frac{1}{27} \sqrt{(k-1)n}
+    \end{equation*}
+    where $\nu_\pi$ is the Gaussian bandit for which the $i$th arm has reward distribution $\mathcal{N}(\mu_i , 1)$.
+\end{theorem*}
+
+\begin{exercise*}{9.3}[UCB*]
+    Suppose we modify the index used by MOSS to be
+    \begin{equation*}
+        \hat{\mu}_i (t-1)+ \sqrt{\frac{4}{T_i (t-1)} \log^+ \left(\frac{n}{T_i (t-1)}\right)}.
+    \end{equation*}
+    \begin{itemize}
+        \item[(a)] Show that for all 1-subgaussian bandits, this new policy suffers regret at most
+        \begin{equation*}
+            R_n \leq C \left( \sum_{i : \Delta_i > 0} \Delta_i + \frac{1}{\Delta_i} \log^+ (n \Delta_i^2) \right)
+        \end{equation*}
+        where $C > 0$ is a universal constant.
+        \item[(b)] Under the same conditions as the previous part, show there exists a universal constant $C > 0$ such that
+        \begin{equation*}
+            R_n \leq C \sqrt{kn \log(k)} + \sum_{i=1}^k \Delta_i.
+        \end{equation*}
+        \item[(c)] Repeat part (a) and part (b) using the index
+        \begin{equation*}
+            \hat{\mu}_i (t-1) + \sqrt{\frac{4}{T_i (t-1)} \log^+ \left(\frac{t}{T_i (t-1)}\right)}.
+        \end{equation*}
+    \end{itemize}
+\end{exercise*}
+
+\begin{solution*}{9.3}
+    Suppose $n \geq k \geq 2$.
+    Define
+    \begin{equation*}
+        b(s) = \sqrt{\frac{4}{s} \log^+ \left(\frac{n}{s}\right)}, \, \text{ and } \, U_i (s) = \hat{\mu}_{i,s} + b(s),
+    \end{equation*}
+    and an event
+    \begin{equation*}
+        G_i = \left\{ \exists s \in \{1, \ldots, n\} \text{ s.t. } U^* (s) < \mu^* - \frac{\Delta_i}{2} \right\}.
+    \end{equation*}
+\end{solution*}
 
 %-----------------------------------------
 
