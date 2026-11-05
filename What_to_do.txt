@@ -1,0 +1,13 @@
+Add exercise 5.5, 5.6, 5.9, 5.10
+
+Refine exercise 4.11(Retirement policy)
+
+Add proof of theorem 6.1
+
+Add proof of theorem 8.1, lemma 8.2
+
+Add solution of exercise 8.2, exercise 8.3
+
+Add proof of theorem 9.1, 9.2, lemma 9.3
+
+Add solution of exercise 9.3 (c)
