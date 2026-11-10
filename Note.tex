@@ -99,7 +99,7 @@
 \begin{document}
 
 \title{Note on Bandit Algorithms}
-\author{}
+\author{Heesun JI}
 \date{\today}
 \maketitle
 
@@ -549,7 +549,7 @@ Here we are challenging to maximize the total reward $S_n = \sum_{t=1}^{n} X_t$ 
 
 \begin{solution*}{}
     \begin{itemize}
-        \item[(a)] True, the following are the proof;
+        \item[(a)] True, the following is the proof;
         \begin{proof}
             If every arm is optimal, then $\lim_{n \rightarrow \infty} \frac{\mathbb{E}[T^*(n)]}{n} = \lim_{n \rightarrow \infty} \frac{n}{n} = 1$.
             Suppose not. That is, 
@@ -992,7 +992,17 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
 \end{theorem*}
 
 \begin{proof}
-    Fill.
+    Assume without loss of generality $\mu_1 = \mu^* = \max_i \mu_i$. By regret decomposition lemma,
+    \begin{align*}
+        \mathbb{E}[T_i (n)] &= m+ (n-mk) \mathbb{P}[A_{mk+1} = i] \\
+        &\leq m+(n-mk)\mathbb{P}\left[\hat{\mu}_i (mk) \geq \max_{j \neq i} \hat{\mu}_j (mk) \right].
+    \end{align*}
+    Here
+    \begin{align*}
+        \mathbb{P}\left[\hat{\mu}_i (mk) \geq \max_{j \neq i} \hat{\mu}_j (mk) \right] &\leq \mathbb{P} \left[\hat{\mu}_i (mk) \geq \hat{\mu}_1(mk)\right] \\
+        &= \mathbb{P}\left[\hat{\mu}_i (mk) -\mu_i - (\hat{\mu}_1 (mk) -\mu_1) \geq \Delta_i \right].
+    \end{align*}
+
 \end{proof}
 
 \begin{exercise*}{6.6}[Doubling trick]
@@ -1227,6 +1237,7 @@ where $T_i(t) = \sum_{s=1}^{t} \mathbbm{1}\{A_s = i\}$ is the number of times ar
         \end{equation*}
     \end{itemize}
 \end{solution*}
+
 %-----------------------------------------
 
 \section{The Upper Confidence Bound Algorithm}
@@ -1511,7 +1522,7 @@ Define
 
 \begin{algorithm*}[H]
     \caption{Asymptotically optimal UCB}
-    \textbf{Input} k
+    \textbf{Input} $k$
 
     Choose each arm once
 
@@ -1545,7 +1556,7 @@ Define
     Let $X_1, \ldots, X_n$ be independent 1-subgaussian random variables, $\hat{\mu}_t = \frac{1}{t} \sum_{i=1}^t X_i, \epsilon >0, a> 0$.
     Suppose that
     \begin{equation*}
-        \kappa = \sum_{t=1}^n \mathbbm{1}_\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \}, \hspace{0.2cm} \kappa' = u + \sum_{t=\ceil{u}}^n \mathbbm{1}_\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \}
+        \kappa = \sum_{t=1}^n \mathbbm{1}\left\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \right\}, \hspace{0.2cm} \kappa' = u + \sum_{t=\ceil{u}}^n \mathbbm{1}\left\{\hat{\mu}_t + \sqrt{\frac{2a}{t}} \geq \epsilon \right\}
     \end{equation*}
     where $u = 2a\epsilon^{-2}$.
     Then
@@ -1563,6 +1574,65 @@ Define
     \end{equation*}
     where $\pi$ is the policy of asymptotically optimal UCB.
 \end{exercise*}
+
+\begin{solution*}{}
+    Let $\mu_2 = 0$. Then, as we have $\mu_1 = 1$, $\Delta_1 = 0$ and $\Delta_2 = 1$.
+    By Theorem 8.1,
+    \begin{equation*}
+        \limsup_{n \to \infty} \frac{R_n (\pi, \nu)}{\log n} \leq \sum_{i : \Delta_i >0} \frac{2}{\Delta_i} = 2. \tag{*}
+    \end{equation*}
+    Note that both arms are chosen infinitely. (If not, $\exists \, i$ such that $\sqrt{\frac{2\log f(t)}{T_i(t-1)}} \to \infty$ since $T$ is fixed in finite round, which implies another arm is chosen infinitely.)
+    Hence we have $T_i(t) \to \infty$ and $\hat{\mu}_{i,t-1} \to \mu_i$ as $t \to \infty$, for all $i$.
+    Let $\epsilon > 0$ be given. Then $\exists \, N \in \mathbb{N}$ s.t.
+    \begin{equation*}
+        ^\forall \, t \geq N, \qquad \hat{\mu}_{1,t-1} \leq 1+ \epsilon, \, \text{ and } \,\, \hat{\mu}_{2,t-1} \geq -\epsilon.
+    \end{equation*}
+    If $T_2 (n) < \frac{n}{4}$, then $\exists t \in \{ \ceil{\frac{n}{2}}, \ldots, n \}$ such that the policy chooses arm 1 at $t$.
+    Hence
+    \begin{align*}
+        T_1(t-1) = t-1-T_2(t-1) &\geq \frac{n}{2} -1 -T_2 (t-1) \\
+        &> \frac{n}{2} -1 -\frac{n}{4} \\
+        &= \frac{n}{4} -1.
+    \end{align*}
+    It follows that $\exists \, N_0 \in \mathbb{N}$ such that $^\forall \, n \geq N_0$,
+    \begin{equation*}
+        \sqrt{\frac{2\log f(t)}{T_1 (t-1)}} \leq \sqrt{\frac{2\log f(n)}{\frac{n}{4} -1}} \leq \epsilon.
+    \end{equation*}
+    That is, $^\forall \, n \geq N_1 := \max \{N, N_0\}$,
+    \begin{align*}
+        -\epsilon + \sqrt{\frac{2\log f(t)}{T_2 (t-1)}} &\leq \hat{\mu_2}(t-1)+ \sqrt{\frac{2\log f(t)}{T_2(t-1)}} \\
+        &\leq \hat{\mu_1}(t-1) + \sqrt{\frac{2\log f(t)}{T_1 (t-1)}} \\
+        &\leq 1 + 2\epsilon.
+    \end{align*}
+    \begin{equation*}
+        \implies \log f(t) \leq T_2 (t-1) \cdot (1+3\epsilon)^2.
+    \end{equation*}
+    \begin{equation*}
+        \implies T_2(n) \geq T_2(t-1) \geq \frac{2 \log f(t)}{(1+3\epsilon)^2} \geq \frac{2\log f(\frac{n}{2})}{(1+3\epsilon)^2}.
+    \end{equation*}
+    Therefore, $^\forall \, n \geq N_1$,
+    \begin{equation*}
+        T_2(n) \geq \min \left\{ \frac{n}{4}, \frac{2\log f(\frac{n}{2})}{(1+3\epsilon)^2} \right\}.
+    \end{equation*}
+    Note that
+    \begin{equation*}
+        \lim_{n \to \infty} \frac{\log f(\frac{n}{2})}{\log n} 
+        = \lim_{n \to \infty} \frac{\frac{(\log \frac{n}{2})^2 + 2 \log \frac{n}{2}}{2 + n \left( \log \left( \frac{n}{2} \right) \right)^2}}{{\frac{1}{n}}}
+        = \lim_{n \to \infty} \frac{n \left( \log \frac{n}{2}\right)^2 + 2n\log \frac{n}{2}}{n\left(\log \frac{n}{2}\right)^2 + 2}
+        = 1.
+    \end{equation*}
+    Hence
+    \begin{equation*}
+        \liminf_{n \to \infty} \frac{T_2(n)}{\log n} \geq \frac{2}{(1+3\epsilon)^2} \geq 2 \qquad \text{a.s.}
+    \end{equation*}
+    Therefore
+    \begin{align*}
+        \liminf_{n \to \infty} \frac{R_n (\pi, \nu)}{\log n} &= \liminf_{n \to \infty} \frac{\mathbb{E}\left[T_2(n)\right]}{\log n} \\
+        &\geq \mathbb{E} \left[ \liminf_{n \to \infty} \frac{T_2(n)}{\log n}\right] \\
+        &\geq 2.
+    \end{align*}
+    Along with (*), we get $\liminf_{n \to \infty} \frac{R_n (\pi, \nu)}{\log n} = 2$.
+\end{solution*}
 
 \begin{exercise*}{8.3}
     Consider the setting of Exercise 8.2 and define a policy by
@@ -1582,6 +1652,19 @@ Define
         \end{cases}
     \end{equation*}
 \end{exercise*}
+
+\begin{proof}
+    We divide the cases as $\mu_1 \geq 0$, $\mu_1 < 0$.
+    \begin{itemize}
+        \item[(1)] Suppose $\mu_1 \geq 0$.
+        Then $R_n(\pi, \nu) = \mu_1 \cdot \sum_{t=1}^n \mathbb{P} \left[ A_t = 2 \right]$.
+        Define a good event
+        \begin{equation*}
+            G_t = \bigcap_{j=1}^{t-1} \left\{ \hat{\mu_{1,j}} + \sqrt{\frac{2\log f(t)}{j}}\geq 0 \right\}, \qquad ^\forall t \geq 2.
+        \end{equation*}
+        Note that $G_t \subset \{A_t=1\}$ and $\{A_t = 2\} \subset G_t^c$.
+    \end{itemize}
+\end{proof}
 
 %-----------------------------------------
 
@@ -1685,23 +1768,22 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
         \end{equation*}
         and an event
         \begin{equation*}
-            G_i = \left\{ \exists s \in \{1, \ldots, n\} \text{ s.t. } U^* (s) < \mu^* - \frac{\Delta_i}{2} \right\}.
+            G_i = \left\{ \exists \, s \in \{1, \ldots, n\} \text{ s.t. } U^* (s) \leq \mu^* - \frac{\Delta_i}{2} \right\}.
         \end{equation*}
         Apply Lemma 9.3 with $\delta = 1/n$, $\Delta = \Delta_i /2$, $Y_j^*$ be $j$-th reward of optimal arm, and $X_j = Y_j^* - \mu^*$ implies
         \begin{align*}
-            \mathbb{P}\left[ \exists \, s \in \{1, \ldots, n \} \, \text{ s.t. } \, \frac{1}{s} \sum_{j=1}^s X_j + b(s) + \frac{\Delta_i}{2} \leq 0 \right]
+            \mathbb{P}\left[G_i\right]
             &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \hat{\mu}_s^* + b(s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
-            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, U^* (s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
-            &= \mathbb{P}\left[G_i\right] \\
+            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \frac{1}{s} \sum_{j=1}^s X_j + b(s) + \frac{\Delta_i}{2} \leq 0 \right]\\
             &\leq \frac{60}{n \Delta_i^2}.
         \end{align*}
         Now, for any suboptimal arm $i$,
         \begin{align*}
-            T_i (n) &= 1 + \sum_{t=k+1}^n \mathbbm{1}_{\left\{A_t = i\right\}} \\
-            &= 1 + \sum_{t=k+1}^n \mathbbm{1}_{\left\{A_t = i, \, U_i (T_i (t-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \mathbbm{1}_{\left\{A_t = i, \, U_i (T_i (t-1))<\mu_i + \frac{\Delta_i}{2}\right\}} \\
-            &\leq 1 + \sum_{s=1}^{T_i(n)-1} \mathbbm{1}_{\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \sum_{t=k+1}^n \mathbbm{1}_{\left\{U^* (T^* (t-1)) \leq U_i (T_i (t-1)) < \mu_i + \frac{\Delta_i}{2}\right\}} \\
-            &\leq 1 + \sum_{s=1}^n \mathbbm{1}_{\left\{U_i(s) \geq \mu_i + \frac{\Delta_i}{2}\right\}} + \sum_{s=1}^n \mathbbm{1}_{\left\{U^* (s) < \mu^* - \frac{\Delta_i}{2}\right\}} \\
-            &\leq 1 + n \mathbbm{1}_{G_i} + \sum_{s=1}^n \mathbbm{1}_{\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\}}.
+            T_i (n) &= 1 + \sum_{t=k+1}^n \mathbbm{1}\left\{A_t = i\right\} \\
+            &= 1 + \sum_{t=k+1}^n \mathbbm{1}\left\{A_t = i, \, U_i (T_i (t-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\} + \mathbbm{1}\left\{A_t = i, \, U_i (T_i (t-1))<\mu_i + \frac{\Delta_i}{2}\right\} \\
+            &\leq 1 + \sum_{s=1}^{T_i(n)-1} \mathbbm{1}\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\} + \sum_{t=k+1}^n \mathbbm{1}\left\{U^* (T^* (t-1)) \leq U_i (T_i (t-1)) < \mu_i + \frac{\Delta_i}{2}\right\} \\
+            &\leq 1 + \sum_{s=1}^n \mathbbm{1}\left\{U_i(s) \geq \mu_i + \frac{\Delta_i}{2}\right\} + \sum_{s=1}^n \mathbbm{1}\left\{U^* (s) < \mu^* - \frac{\Delta_i}{2}\right\} \\
+            &\leq 1 + n \mathbbm{1}\{G_i\} + \sum_{s=1}^n \mathbbm{1}\left\{U_i (s) \geq \mu_i + \frac{\Delta_i}{2}\right\}.
         \end{align*}
         Hence 
         \begin{equation*}
@@ -1726,9 +1808,10 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
             &= 1 + \frac{92 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
         \end{align*}
         \begin{equation*}
-            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \left( \sum_{i=1}^n \Delta_i + \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \right)
+            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i=1}^n \left( \Delta_i + \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \right)
         \end{equation*}
         for some $C$.
+
         \item[(b)] From (a), we have $^\forall i \in \{1, \ldots, k \}$,
         \begin{equation*}
             \Delta_i \mathbb{E} \left[ T_i (n) \right] \leq C \left(\Delta_i + \frac{\log^+ (n \Delta_i^2)}{\Delta_i}\right)
@@ -1757,6 +1840,50 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
             &\leq \sqrt{kn \log^+ k} + C \sqrt{kn\log^+ k} + \frac{2C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
             &\leq C \left( \sqrt{kn \log^+ k} + \sum_{i=1}^k \Delta_i \right).
         \end{align*}
+
+        \item[(c)] Define $^\forall \, s \in \{1,\ldots,n\}$ and $t \geq 2$,
+        \begin{equation*}
+            b_t(s) = \sqrt{\frac{4}{s} \log^+ \left(\frac{t}{s}\right)}, \, \text{ and } \, U_{i,t}(s) = \hat{\mu}_{i,s} + b_t(s),
+        \end{equation*}
+        and an event
+        \begin{equation*}
+            G_{i,t} = \left\{ \exists \, s \in \{1, \ldots, n\} \text{ s.t. } U^*_t (s) \leq \mu^* - \frac{\Delta_i}{2} \right\}.
+        \end{equation*}
+        Apply Lemma 9.3 with $\delta = 1/t$, $\Delta = \Delta_i /2$, $Y_j^*$ be $j$-th reward of optimal arm, and $X_j = Y_j^* - \mu^*$ implies
+        \begin{align*}
+            \mathbb{P}\left[G_{i,t}\right]
+            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \hat{\mu}_s^* + b_t(s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
+            &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \frac{1}{s} \sum_{j=1}^s X_j + b_t(s) + \frac{\Delta_i}{2} \leq 0 \right]\\
+            &\leq \frac{60}{t \Delta_i^2}.
+        \end{align*}
+        Now, for any suboptimal arm $i$ and for $n \geq t$,
+        \begin{align*}
+            T_i (n) &= 1 + \sum_{j=k+1}^n \mathbbm{1}\left\{A_j = i\right\} \\
+            &\leq 1 + n \mathbbm{1}\{G_{i,t}\} + \sum_{j=k+1}^n \mathbbm{1}\left\{U_{i,j} (T_i (j-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\}.
+        \end{align*}
+        Hence 
+        \begin{equation*}
+            \mathbb{E}\left[ T_i (n) \right] \leq 1 + n \mathbb{P} \left[G_{i,t} \right] + \sum_{s=1}^n \mathbb{P} \left[ U_{i,n} (s) \geq \mu_i + \frac{\Delta_i}{2} \right].
+        \end{equation*}
+        Here the summand is equal to $\mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{2} - b_t(s) \right]$, whose bound will be determined by Cor 5.5.
+        So, we shall found separating value that makes $\frac{\Delta_i}{2} - b_t(s) > 0$.
+        \begin{align*}
+            b_t(s) \leq \frac{\Delta_i}{4} \impliedby s \geq \frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}.
+        \end{align*}
+        Separate $s$ by
+        \begin{equation*}
+            s \leq \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}}.
+        \end{equation*}
+        Then
+        \begin{align*}
+            \mathbb{E}\left[T_i (n) \right] &\leq 1 + n \mathbb{P} \left[ G_{i,t} \right] + \ceil*{\frac{64\log^+ (t\Delta_i^2)}{\Delta_i^2}} - 1 + \sum_{s = \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
+            &\leq \frac{60}{\Delta_i^2} + \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
+            &= 1 + \frac{92 + 64 \log^+ (t\Delta_i^2)}{\Delta_i^2}.
+        \end{align*}
+        \begin{equation*}
+            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i=1}^n \left( \Delta_i + \frac{1+ \log^+ (n\Delta_i^2)}{\Delta_i} \right)
+        \end{equation*}
+        for some $C$.
     \end{itemize}
 \end{solution*}
 
