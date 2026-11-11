@@ -1794,21 +1794,21 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
         \begin{align*}
             b(s) \leq \frac{\Delta_i}{4} &\iff s \Delta_i^2 \geq 64 \log^+ \frac{n}{s} \\
             &\impliedby s \Delta_i^2 \geq 64 \log^+ (n \Delta_i^2) \text{ and } s \geq \frac{1}{\Delta_i^2} \\
-            &\impliedby s \geq \frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
+            &\impliedby s \geq \frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
         \end{align*}
         Separate $s$ by
         \begin{equation*}
-            s \leq \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}.
+            s \leq \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}.
         \end{equation*}
         Then
         \begin{align*}
-            \mathbb{E}\left[T_i (n) \right] &\leq 1 + n \mathbb{P} \left[ G_i \right] + \ceil*{\frac{64\log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1 + \sum_{s = \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu_{i,s}} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
-            &\leq \frac{60}{\Delta_i^2} + \ceil*{\frac{64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
-            &\leq 1 + \frac{60 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2} + \frac{32}{\Delta_i^2} \\
-            &= 1 + \frac{92 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
+            \mathbb{E}\left[T_i (n) \right] &\leq 1 + n \mathbb{P} \left[ G_i \right] + \ceil*{\frac{1 + 64\log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1 + \sum_{s = \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu_{i,s}} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
+            &\leq \frac{60}{\Delta_i^2} + \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
+            &\leq 1 + \frac{61 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2} + \frac{32}{\Delta_i^2} \\
+            &= 1 + \frac{93 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
         \end{align*}
         \begin{equation*}
-            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i=1}^n \left( \Delta_i + \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \right)
+            \therefore R_n = \sum_{i : \Delta_i > 0} \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i: \Delta_i > 0} \left( \Delta_i + \frac{1 + \log^+ (n\Delta_i^2)}{\Delta_i} \right)
         \end{equation*}
         for some $C$.
 
@@ -1820,7 +1820,7 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
         Let $\delta > 0$ be some small constant, which will be decided later.
         Then
         \begin{align*}
-            R_n &\leq \sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
+            R_n &= \sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
             &\leq n\delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i : \Delta_i > \delta} \frac{\log^+ (n\Delta_i^2)}{\Delta_i}.
         \end{align*}
         Let $\Delta_i = r\delta$ for $\Delta_i$'s with $\Delta_i > \delta$, where $r>1$.
@@ -1854,36 +1854,54 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
             \mathbb{P}\left[G_{i,t}\right]
             &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \hat{\mu}_s^* + b_t(s) \leq \mu^* - \frac{\Delta_i}{2} \right] \\
             &= \mathbb{P}\left[ \exists \, s \, \text{ s.t. } \, \frac{1}{s} \sum_{j=1}^s X_j + b_t(s) + \frac{\Delta_i}{2} \leq 0 \right]\\
-            &\leq \frac{60}{t \Delta_i^2}.
+            &\leq \frac{60}{t \Delta_i^2}.\tag{*}
         \end{align*}
         Now, for any suboptimal arm $i$ and for $n \geq t$,
         \begin{align*}
             T_i (n) &= 1 + \sum_{j=k+1}^n \mathbbm{1}\left\{A_j = i\right\} \\
-            &\leq 1 + n \mathbbm{1}\{G_{i,t}\} + \sum_{j=k+1}^n \mathbbm{1}\left\{U_{i,j} (T_i (j-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\}.
+            &\leq 1 + \sum_{j=k+1}^n \mathbbm{1}\left\{G_{i,j}\right\} + \sum_{j=k+1}^n \mathbbm{1}\left\{A_j=i, U_{i,j}(T_i(j-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\} \\
+            &\leq 1 + \sum_{j=k+1}^n \mathbbm{1}\left\{G_{i,j}\right\} + \sum_{j=k+1}^n \mathbbm{1}\left\{A_j=i, \hat{\mu}_{i,T_i(j-1)}+b_n(T_i(j-1)) \geq \mu_i + \frac{\Delta_i}{2}\right\} \\
+            &\leq 1 + \sum_{j=k+1}^n \mathbbm{1}\left\{G_{i,j}\right\} + \sum_{s=1}^n \mathbbm{1}\left\{\hat{\mu}_{i,s}+b_n(s) \geq \mu_i + \frac{\Delta_i}{2}\right\}.
         \end{align*}
-        Hence 
-        \begin{equation*}
-            \mathbb{E}\left[ T_i (n) \right] \leq 1 + n \mathbb{P} \left[G_{i,t} \right] + \sum_{s=1}^n \mathbb{P} \left[ U_{i,n} (s) \geq \mu_i + \frac{\Delta_i}{2} \right].
-        \end{equation*}
-        Here the summand is equal to $\mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{2} - b_t(s) \right]$, whose bound will be determined by Cor 5.5.
-        So, we shall found separating value that makes $\frac{\Delta_i}{2} - b_t(s) > 0$.
+        First we handle $\sum_{j=k+1}^n \mathbbm{1}\left\{G_{i,j}\right\}$. As we calculated in (*), $\mathbb{P}[G_{i,j}] \leq \min\left\{1,\frac{60}{j\Delta_i^2}\right\}$.
+        Let $m_i = \ceil*{\frac{1}{\Delta_i^2}}$. Then
         \begin{align*}
-            b_t(s) \leq \frac{\Delta_i}{4} \impliedby s \geq \frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}.
+            \mathbb{E}\left[\sum_{k+1 \leq j \leq n} \mathbbm{1}\left\{G_{i,j}\right\}\right] &\leq \sum_{\substack{k+1 \leq j \leq n \\ j \leq m_i}} 1 + \sum_{\substack{k+1 \leq j \leq n \\ j > m_i}} \frac{60}{j\Delta_i^2} \\
+            &\left(\leq m_i + \frac{60}{\Delta_i^2} \int_{m_i}^n \frac{dx}{x} = m_i + \frac{60}{\Delta_i^2} \log \frac{n}{m_i} \right)\\
+            &\leq 1 + \frac{1}{\Delta_i^2} + \frac{60}{\Delta_i^2} \log^+ (n\Delta_i^2).
+        \end{align*}
+        Second, in order to handle $\sum_{s=1}^n \mathbbm{1}\left\{\hat{\mu}_{i,s}+b_n(s) \geq \mu_i + \frac{\Delta_i}{2}\right\}$, observe that
+        \begin{align*}
+            b_n(s) \leq \frac{\Delta_i}{4} \impliedby s \geq \frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
         \end{align*}
         Separate $s$ by
         \begin{equation*}
-            s \leq \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}}.
+            s \leq \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}} - 1, \quad s \geq \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}.
         \end{equation*}
         Then
         \begin{align*}
-            \mathbb{E}\left[T_i (n) \right] &\leq 1 + n \mathbb{P} \left[ G_{i,t} \right] + \ceil*{\frac{64\log^+ (t\Delta_i^2)}{\Delta_i^2}} - 1 + \sum_{s = \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
-            &\leq \frac{60}{\Delta_i^2} + \ceil*{\frac{64 \log^+ (t\Delta_i^2)}{\Delta_i^2}} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
-            &= 1 + \frac{92 + 64 \log^+ (t\Delta_i^2)}{\Delta_i^2}.
+            \mathbb{E}\left[T_i (n) \right] &\leq 1 + 1 + \frac{1}{\Delta_i^2} + \frac{60}{\Delta_i^2} \log^+ (n\Delta_i^2) + \frac{1 + 64\log^+ (n\Delta_i^2)}{\Delta_i^2} + \sum_{s = \ceil*{\frac{1 + 64 \log^+ (n\Delta_i^2)}{\Delta_i^2}}}^n \mathbb{P} \left[ \hat{\mu}_{i,s} - \mu_i \geq \frac{\Delta_i}{4}\right] \\
+            &\leq 2 + \frac{2}{\Delta_i^2} + \frac{124 \log^+ (n\Delta_i^2)}{\Delta_i^2} + \sum_{s=1}^\infty \exp\left(-\frac{s \Delta_i^2}{32} \right) \\
+            &\leq 2 + \frac{34 + 124 \log^+ (n\Delta_i^2)}{\Delta_i^2}.
         \end{align*}
+        Therefore the instance-dependent regret bound is given by
         \begin{equation*}
-            \therefore R_n = \sum_{i=1}^n \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i=1}^n \left( \Delta_i + \frac{1+ \log^+ (n\Delta_i^2)}{\Delta_i} \right)
+            R_n = \sum_{i: \Delta_i > 0} \Delta_i \mathbb{E}[T_i (n)] \leq C \sum_{i: \Delta_i > 0} \left( \Delta_i + \frac{1+ \log^+ (n\Delta_i^2)}{\Delta_i} \right)
         \end{equation*}
         for some $C$.
+        Now for worst-case regret bound, it is parallel to what we did at (b).
+        Let $\delta = \sqrt{\frac{k\log^+ k}{n}}$.
+        Then
+        \begin{align*}
+            R_n &=\sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
+            &\leq n \delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i: \Delta_i > \delta} \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \\
+            &\leq n\delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 2 \right) \\
+            &\leq \sqrt{kn \log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+(k\log^+ k) +2 \right)  + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k +2 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn\log^+ k} + \frac{2C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
+            &\leq C \left( \sqrt{kn \log^+ k} + \sum_{i=1}^k \Delta_i \right)
+        \end{align*}
+        for some universal constant $C$ carefully chosen.
     \end{itemize}
 \end{solution*}
 
