@@ -1814,30 +1814,30 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
 
         \item[(b)] From (a), we have $^\forall i \in \{1, \ldots, k \}$,
         \begin{equation*}
-            \Delta_i \mathbb{E} \left[ T_i (n) \right] \leq C \left(\Delta_i + \frac{\log^+ (n \Delta_i^2)}{\Delta_i}\right)
+            \Delta_i \mathbb{E} \left[ T_i (n) \right] \leq C \left(\Delta_i + \frac{1 + \log^+ (n \Delta_i^2)}{\Delta_i}\right)
         \end{equation*}
         for some $C$.
         Let $\delta > 0$ be some small constant, which will be decided later.
         Then
         \begin{align*}
             R_n &= \sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
-            &\leq n\delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i : \Delta_i > \delta} \frac{\log^+ (n\Delta_i^2)}{\Delta_i}.
+            &\leq n\delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i : \Delta_i > \delta} \frac{1 + \log^+ (n\Delta_i^2)}{\Delta_i}.
         \end{align*}
         Let $\Delta_i = r\delta$ for $\Delta_i$'s with $\Delta_i > \delta$, where $r>1$.
         Then
         \begin{equation*}
-            \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \leq \frac{\log^+ (n\delta^2) + 2 \log r}{\delta r} \leq \frac{\log^+ (n\delta^2)}{\delta} + \frac{2}{\delta}
+            \frac{1 + \log^+ (n\Delta_i^2)}{\Delta_i} \leq \frac{1 + \log^+ (n\delta^2) + 2\log r}{\delta r} \leq \frac{\log^+ (n\delta^2)}{\delta} + \frac{3}{\delta}
         \end{equation*}
         for $\Delta_i$'s with $\Delta_i > \delta$. Hence
         \begin{equation*}
-            R_n \leq n\delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 2 \right).
+            R_n \leq n\delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 3 \right).
         \end{equation*}
         Choose $\delta = \sqrt{\frac{k\log^+ k}{n}}$.
         Then
         \begin{align*}
-            R_n &\leq \sqrt{kn\log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+ (k\log^+ k ) + 2 \right) + C \sum \Delta_i \\
-            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k +2 \right) + C \sum \Delta_i \\
-            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn\log^+ k} + \frac{2C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
+            R_n &\leq \sqrt{kn\log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+ (k\log^+ k ) + 3 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k + 3 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + 2C \sqrt{kn\log^+ k} + \frac{3C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
             &\leq C \left( \sqrt{kn \log^+ k} + \sum_{i=1}^k \Delta_i \right).
         \end{align*}
 
@@ -1894,11 +1894,11 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
         Then
         \begin{align*}
             R_n &=\sum_{i:0<\Delta_i \leq \delta} \Delta_i \mathbb{E}\left[T_i(n) \right] + \sum_{i:\Delta_i > \delta} \Delta_i \mathbb{E} \left[ T_i (n) \right] \\
-            &\leq n \delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i: \Delta_i > \delta} \frac{\log^+ (n\Delta_i^2)}{\Delta_i} \\
-            &\leq n\delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 2 \right) \\
-            &\leq \sqrt{kn \log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+(k\log^+ k) +2 \right)  + C \sum \Delta_i \\
-            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k +2 \right) + C \sum \Delta_i \\
-            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn\log^+ k} + \frac{2C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
+            &\leq n \delta + C \sum_{i: \Delta_i > \delta} \Delta_i + C \sum_{i: \Delta_i > \delta} \frac{1 + \log^+ (n\Delta_i^2)}{\Delta_i} \\
+            &\leq n \delta + C \sum_{i:\Delta_i > \delta} \Delta_i + \frac{C k}{\delta} \left(\log^+(n\delta^2) + 3 \right) \\
+            &\leq \sqrt{kn \log^+ k} + \frac{C k \sqrt{n}}{\sqrt{k\log^+ k}}\left(\log^+(k\log^+ k) + 3 \right)  + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + C \sqrt{kn}\frac{1}{\sqrt{\log^+ k}}\left( 2\log^+ k + 3 \right) + C \sum \Delta_i \\
+            &\leq \sqrt{kn \log^+ k} + 2C \sqrt{kn\log^+ k} + \frac{3C \sqrt{kn}}{\sqrt{\log^+ k}} + C \sum \Delta_i \\
             &\leq C \left( \sqrt{kn \log^+ k} + \sum_{i=1}^k \Delta_i \right)
         \end{align*}
         for some universal constant $C$ carefully chosen.
@@ -1907,6 +1907,91 @@ From the theorem, we may say MOSS is minimax optimal up to universal constant fa
 
 %-----------------------------------------
 
+\section{The Upper Confidence Bound Algorithm: Bernoulli Noise}
+
+%-----------------------------------------
+
+\section{The Exp3 Algorithm}
+
+\begin{exercise*}{11.6}[Variance of Exp3]
+    Suppose $\eta \in [n^{-p}, 1]$ for some $p \in (0,1)$ and the bandit $y \in [0,1]^{n \times k}$ is given.
+    The learner samples $A_t \sim P_t$ given by
+    \begin{equation*}
+        P_{ti} = \frac{\exp\left(-\eta\sum_{s=1}^{t-1}\hat{Y}_{si}\right)}{\sum_{j=1}^k \exp \left(-\eta\sum_{s=1}^{t-1}\hat{Y}_{sj}\right)}
+    \end{equation*}
+    where $\hat{Y}_{ti} = A_{ti}y_{ti}/P_{ti}$. Let $\alpha \in [1/4. 1/2]$ be some constant and define
+    \begin{equation*}
+        y_{t1} = 
+        \begin{cases}
+            0 & \text{ if } t \leq n/2 \\
+            1 & \text{ otherwise }
+        \end{cases}
+        \hspace{0.2cm}
+        \text{ and }
+        \hspace{0.2cm}
+        y_{t2} =
+        \begin{cases}
+            \alpha & \text{ if } t \leq n/2 \\
+            0 & \text{ otherwise }.
+        \end{cases}
+    \end{equation*}
+    For simplicity we may assume $n$ is even.
+    \begin{itemize}
+        \item[(a)] Define $\{q_s\}_{s=1}^n$ where $^\forall s \in \{1, \ldots, n\}, \, q_s:[1/4,1/2] \rightarrow \mathbb{R}$, and
+        \begin{equation*}
+            q_{s+1}(\alpha) = \frac{q_s(\alpha) \exp(-\eta \alpha/q_s(\alpha))}{1 - q_s(\alpha)+q_s(\alpha)\exp(-\eta\alpha/q_s(\alpha))}
+        \end{equation*}
+        where the initial value is given by $q_0(\alpha) = 1/2$. Show that for $t \leq 1+ n/2$, $P_{t2} = q_{T_2(t-1)}(\alpha)$ where $T_2(t) = \sum_{s=1}^t A_{s2}$.
+        \item[(b)] Show that for sufficiently large $n$ there exists an $\alpha \in [1/4. 1/2]$ and $s \in \mathbb{N}$ such that
+        \begin{equation*}
+            q_s(\alpha) = \frac{1}{8n} \hspace{0.2cm} \text{ and } \hspace{0.2cm} \sum_{u=0}^{s-1} \frac{1}{q_u(\alpha)} \leq \frac{n}{8}.
+        \end{equation*}
+        \item[(c)] Prove that $\mathbb{P}[T_2(n/2) \geq s+1] \geq 1/65$.
+        \item[(d)] Prove that $\mathbb{P}[\hat{R}_n \geq n/4] \geq (1-n \exp(-\eta n)/2)/65$. 
+    \end{itemize}
+\end{exercise*}
+%-----------------------------------------
+
+\section{The Exp3-IX Algorithm}
+
+\begin{exercise*}{12.3}[Exp3.P]
+    Let $\hat{Y}_{ti} = A_{ti}y_{ti}/P_{ti} - \beta / P_{ti}$, $\hat{L}_{ti} = \sum_{s=1}^t \hat{Y}_{si}$, and $A_t \sim P_t$ where
+    \begin{equation*}
+        P_{ti} = (1-\gamma)\tilde{P}_{ti} + \frac{\gamma}{k} \hspace{0.2cm} \text{ with } \hspace{0.2cm} \tilde{P}_{ti} = \frac{\exp\left(-\eta\hat{L}_{t-1,i}\right)}{\sum_{j=1}^k\exp\left(-\eta\hat{L}_{t-1,j}\right)}.
+    \end{equation*}
+    \begin{itemize}
+        \item[(a)] Let $\delta \in (0,1)$ and $i \in \{1, \ldots, k\}$. Show that
+        \begin{equation*}
+            \mathbb{P}\left[\hat{R}_{ni} < n\gamma + (1-\gamma)\sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}(\hat{Y}_{tj} - y_{ti}) + \sum_{t=1}^n \frac{\beta}{P_{t,A_t}} + \sqrt{\frac{n \log(1/\delta)}{2}}\right] \geq 1-\delta.
+        \end{equation*}
+        \item[(b)] Show that
+        \begin{equation*}
+            \sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}(\hat{Y}_{tj} - y_{ti}) = \sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}(\hat{Y}_{tj} - \hat{Y}_{ti}) + \sum_{t=1}^n(\hat{Y}_{ti} - y_{ti}).
+        \end{equation*}
+        \item[(c)] Show that
+        \begin{equation*}
+            \sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}(\hat{Y}_{tj} - \hat{Y}_{ti}) \leq \frac{\log(k)}{\eta} + \eta \sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}\hat{Y}_{tj}^2.
+        \end{equation*}
+        \item[(d)] Show that
+        \begin{equation*}
+            \sum_{t=1}^n \sum_{j=1}^k \tilde{P}_{tj}\hat{Y}_{tj}^2 \leq \frac{n k^2 \beta^2}{\gamma} + \sum_{t=1}^n \frac{1}{P_{t, A_t}}.
+        \end{equation*}
+        \item[(e)] Suppose $\gamma = k\eta$, $\eta = \beta$ and show that $^\forall \delta \in (0,1)$,
+        \begin{equation*}
+            \mathbb{P}\left[\sum_{t=1}^n \frac{1}{P_{t, A_t}} \geq 2nk + \frac{k}{\gamma} \log\left(\frac{1}{\delta}\right)\right] \leq \delta.
+        \end{equation*}
+        \begin{equation*}
+            \mathbb{P}\left[\sum_{t=1}^n \hat{Y}_{ti} - y_{ti} \geq \frac{1}{\beta} \log\left(\frac{1}{\delta}\right)\right] \leq \delta.
+        \end{equation*}
+        \item[(f)] Show that $\exists \, C>0$ such that $^\forall \delta \in (0,1), \, \exists \, \eta, \gamma, \beta$ such that
+        \begin{equation*}
+            \mathbb{P}\left[\hat{R}_n \leq C \sqrt{nk\log(k/\delta)}\right] \geq 1-\delta.
+        \end{equation*}
+        \item[(g)] In which step did you use the modified estimators?
+        \item[(h)] Find a bound where $\eta, \gamma, \beta$ do not depend on $\delta$.
+    \end{itemize}
+\end{exercise*}
+%-----------------------------------------
 \begin{theorem*}{}[Cramér]
     Suppose $X_1, \ldots, X_n$ are i.i.d. random variables whose values lie in $\mathbb{R}^d$ with finite empirical mean defined by $S_n = \frac{1}{n} \sum_{i=1}^n X_i$.
     Define $\mu_n$ to be the law of $S_n$.
